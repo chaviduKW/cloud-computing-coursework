@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/ApiGateway/">
+    <Project Path="ApiGateway/ApiGateway.csproj" />
+  </Folder>
+  <Folder Name="/Microservices/">
+    <Project Path="IdentityApi/IdentityApi.csproj" />
+    <Project Path="SalarySubmissionApi/SalarySubmissionApi.csproj" />
+    <Project Path="SearchApi/SearchApi.csproj" />
+    <Project Path="StatsApi/StatsApi.csproj" />
+    <Project Path="VoteApi/VoteApi.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
+</Solution>

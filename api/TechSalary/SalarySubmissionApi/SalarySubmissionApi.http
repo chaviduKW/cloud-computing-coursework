@@ -1,0 +1,6 @@
+@SalarySubmissionApi_HostAddress = http://localhost:5154
+
+GET {{SalarySubmissionApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
