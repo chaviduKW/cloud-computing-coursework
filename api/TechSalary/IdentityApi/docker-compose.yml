@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: TechSalary.API/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=OrderManagementDB;User Id=sa;Password=YourStrong@Password123;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+    networks:
+      - order-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Password123
+      - MSSQL_SA_PASSWORD=YourStrong@Password123
+    volumes:
+      - sqldata:/var/opt/mssql
+    networks:
+      - order-network
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong@Password123" -Q "SELECT 1" -No -h -1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+networks:
+  order-network:
+    driver: bridge
+
+volumes:
+  sqldata:
+    driver: local
