@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // SQL Server Connection
 builder.Services.AddDbContext<VoteDbContext>(options =>
-    options.UseSqlServer(
+    options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Dependency Injection

@@ -12,17 +12,21 @@ namespace VoteApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("vote");
+
             modelBuilder.Entity<Vote>(entity =>
             {
-                entity.ToTable("Votes"); // table name
+                entity.ToTable("votes");
 
                 entity.HasKey(v => v.Id);
 
+                // Store enum as integer
                 entity.Property(v => v.VoteType)
-                    .HasConversion<int>(); // store enum as int
+                      .HasConversion<int>();
 
+                // Ensure one vote per user per submission
                 entity.HasIndex(v => new { v.SalarySubmissionId, v.UserId })
-                    .IsUnique(); // one vote per user per submission
+                      .IsUnique();
             });
         }
     }
