@@ -19,7 +19,6 @@ namespace VoteApi.Controllers
         }
 
         // POST: api/votes
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CastVote([FromBody] VoteRequest request)
         {
