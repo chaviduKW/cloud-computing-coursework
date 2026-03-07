@@ -7,6 +7,11 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+    // Authentication
+    public DbSet<User> Users { get; set; }
+    public DbSet<AuthRefreshToken> AuthRefreshTokens { get; set; }
+
+    // Business Entities
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Discount> Discounts { get; set; }
@@ -16,6 +21,28 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // User Configuration
+        modelBuilder.Entity<User>()
+            .HasKey(u => u.UserId);
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Role)
+            .HasDefaultValue("User");
+
+        // AuthRefreshToken Configuration
+        modelBuilder.Entity<AuthRefreshToken>()
+            .HasKey(rt => rt.RefreshTokenId);
+
+        modelBuilder.Entity<AuthRefreshToken>()
+            .HasOne(rt => rt.User)
+            .WithMany(u => u.RefreshTokens)
+            .HasForeignKey(rt => rt.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Customer - hard coded seed data with CustomerCode as PK
         modelBuilder.Entity<Customer>()
