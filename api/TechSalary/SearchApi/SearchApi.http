@@ -1,6 +1,56 @@
 @SearchApi_HostAddress = http://localhost:5254
+Accept: application/json
 
-GET {{SearchApi_HostAddress}}/weatherforecast/
+### Get all salary records
+GET {{SearchApi_HostAddress}}/search
+Accept: application/json
+
+###
+
+### Filter by company
+GET {{SearchApi_HostAddress}}/search?company=Google
+Accept: application/json
+
+###
+
+### Filter by designation
+GET {{SearchApi_HostAddress}}/search?designation=Software Engineer
+Accept: application/json
+
+###
+
+### Filter by submitted after (inclusive)
+GET {{SearchApi_HostAddress}}/search?submittedAfter=2025-01-01
+Accept: application/json
+
+###
+
+### Filter by submitted before (inclusive)
+GET {{SearchApi_HostAddress}}/search?submittedBefore=2025-03-01
+Accept: application/json
+
+###
+
+### Filter by company and designation
+GET {{SearchApi_HostAddress}}/search?company=Microsoft&designation=Senior Engineer
+Accept: application/json
+
+###
+
+### Filter by company and date range
+GET {{SearchApi_HostAddress}}/search?company=Google&submittedAfter=2025-01-01&submittedBefore=2025-12-31
+Accept: application/json
+
+###
+
+### Filter by designation and date range
+GET {{SearchApi_HostAddress}}/search?designation=Senior Engineer&submittedAfter=2025-01-01&submittedBefore=2025-06-01
+Accept: application/json
+
+###
+
+### Filter using all parameters
+GET {{SearchApi_HostAddress}}/search?company=Google&designation=Engineer&submittedAfter=2025-01-01&submittedBefore=2025-12-31
 Accept: application/json
 
 ###

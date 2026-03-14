@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TechSalaryIdentity.Infrastructure.Data;
@@ -11,13 +12,15 @@ using TechSalaryIdentity.Infrastructure.Data;
 namespace TechSalaryIdentity.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260302052129_AddAuthenticationEntities")]
+    partial class AddAuthenticationEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.25")
+                .HasAnnotation("ProductVersion", "8.0.24")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -71,19 +74,19 @@ namespace TechSalaryIdentity.Infrastructure.Migrations
                         new
                         {
                             CustomerCode = "C001",
-                            CreatedAt = new DateTime(2026, 3, 14, 4, 31, 41, 546, DateTimeKind.Utc).AddTicks(7859),
+                            CreatedAt = new DateTime(2026, 3, 2, 5, 21, 29, 573, DateTimeKind.Utc).AddTicks(2892),
                             CustomerName = "John Doe Enterprises"
                         },
                         new
                         {
                             CustomerCode = "C002",
-                            CreatedAt = new DateTime(2026, 3, 14, 4, 31, 41, 546, DateTimeKind.Utc).AddTicks(7860),
+                            CreatedAt = new DateTime(2026, 3, 2, 5, 21, 29, 573, DateTimeKind.Utc).AddTicks(2893),
                             CustomerName = "Lanka Traders Pvt Ltd"
                         },
                         new
                         {
                             CustomerCode = "C003",
-                            CreatedAt = new DateTime(2026, 3, 14, 4, 31, 41, 546, DateTimeKind.Utc).AddTicks(7861),
+                            CreatedAt = new DateTime(2026, 3, 2, 5, 21, 29, 573, DateTimeKind.Utc).AddTicks(2894),
                             CustomerName = "ABC Solutions"
                         });
                 });
