@@ -1,6 +1,12 @@
-@SalarySubmissionApi_HostAddress = http://localhost:5154
+POST http://localhost:5154/api/salaries
+Content-Type: application/json
 
-GET {{SalarySubmissionApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+{
+  "country": "Sri Lanka",
+  "company": "Dialog",
+  "role": "Software Engineer",
+  "experienceLevel": "Mid",
+  "salaryAmount": 350000,
+  "currency": "LKR",
+  "anonymize": true
+}
