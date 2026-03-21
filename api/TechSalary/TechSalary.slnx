@@ -2,8 +2,12 @@
   <Folder Name="/ApiGateway/">
     <Project Path="ApiGateway/ApiGateway.csproj" />
   </Folder>
+  <Folder Name="/IdentityApi/">
+    <Project Path="IdentityApi/TechSalary.API/TechSalaryIdentity.API.csproj" />
+    <Project Path="IdentityApi/TechSalary.Core/TechSalaryIdentity.Core.csproj" />
+    <Project Path="IdentityApi/TechSalary.Infrastructure/TechSalaryIdentity.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/Microservices/">
-    <Project Path="IdentityApi/IdentityApi.csproj" />
     <Project Path="SalarySubmissionApi/SalarySubmissionApi.csproj" />
     <Project Path="SearchApi/SearchApi.csproj" />
     <Project Path="StatsApi/StatsApi.csproj" />
