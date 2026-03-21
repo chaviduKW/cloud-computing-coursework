@@ -52,12 +52,6 @@ builder.Services.AddCors(options =>
               .AllowCredentials());
 });
 
-// Services Registration - Business Logic
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IDiscountService, DiscountService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-
 // Services Registration - Authentication & Authorization
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
