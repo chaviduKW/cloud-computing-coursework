@@ -1,0 +1,36 @@
+﻿{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/vote",
+      "UpstreamHttpMethod": [ "Post" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5215
+        }
+      ],
+      "DownstreamPathTemplate": "/api/vote"
+    },
+    {
+      "UpstreamPathTemplate": "/api/vote/{submissionId}",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5215
+        }
+      ],
+      "DownstreamPathTemplate": "/api/vote/{submissionId}"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5000"
+  }
+}
+
+//upstream - requests coming to the api gateway
+//downstream - requests going to the downstream services (microservices)
