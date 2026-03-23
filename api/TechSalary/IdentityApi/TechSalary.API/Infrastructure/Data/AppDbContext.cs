@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using TechSalaryIdentity.Core.Entities;
+using IdentityApi.Core.Entities;
 
-namespace TechSalaryIdentity.Infrastructure.Data;
+namespace IdentityApi.Infrastructure.Data;
 
 public class AppDbContext : DbContext
 {

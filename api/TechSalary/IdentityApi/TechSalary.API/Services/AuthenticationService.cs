@@ -2,12 +2,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
-using TechSalaryIdentity.Core.DTOs;
-using TechSalaryIdentity.Core.Entities;
-using TechSalaryIdentity.Core.Interfaces;
-using TechSalaryIdentity.Infrastructure.Data;
+using IdentityApi.Core.DTOs;
+using IdentityApi.Core.Entities;
+using IdentityApi.Core.Interfaces;
+using IdentityApi.Infrastructure.Data;
 
-namespace TechSalaryIdentity.API.Services
+namespace IdentityApi.Services
 {
     public class AuthenticationService : IAuthenticationService
     {

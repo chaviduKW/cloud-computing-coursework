@@ -1,6 +1,6 @@
-using TechSalaryIdentity.Core.Entities;
+using IdentityApi.Core.Entities;
 
-namespace TechSalaryIdentity.Core.Interfaces;
+namespace IdentityApi.Core.Interfaces;
 
 public interface ITokenService
 {

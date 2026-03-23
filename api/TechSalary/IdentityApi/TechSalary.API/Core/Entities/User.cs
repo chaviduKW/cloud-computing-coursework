@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TechSalaryIdentity.Core.Entities;
+namespace IdentityApi.Core.Entities;
 
 public class User
 {
