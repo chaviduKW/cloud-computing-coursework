@@ -3,10 +3,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using TechSalaryIdentity.Core.Entities;
-using TechSalaryIdentity.Core.Interfaces;
+using IdentityApi.Core.Entities;
+using IdentityApi.Core.Interfaces;
 
-namespace TechSalaryIdentity.API.Services
+namespace IdentityApi.Services
 {
     public class TokenService : ITokenService
     {
@@ -27,6 +27,8 @@ namespace TechSalaryIdentity.API.Services
             {
                 new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.GivenName, user.FirstName),
+                new(ClaimTypes.Surname, user.LastName),
                 new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new(ClaimTypes.Role, user.Role),
                 new("IsActive", user.IsActive.ToString())

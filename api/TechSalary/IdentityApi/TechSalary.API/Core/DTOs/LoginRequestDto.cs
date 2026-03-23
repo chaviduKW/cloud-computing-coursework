@@ -1,4 +1,4 @@
-namespace TechSalaryIdentity.Core.DTOs;
+namespace IdentityApi.Core.DTOs;
 
 public class LoginRequestDto
 {

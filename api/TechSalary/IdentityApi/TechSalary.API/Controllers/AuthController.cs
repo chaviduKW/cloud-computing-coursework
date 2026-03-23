@@ -1,10 +1,10 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TechSalaryIdentity.Core.DTOs;
-using TechSalaryIdentity.Core.Interfaces;
+using IdentityApi.Core.DTOs;
+using IdentityApi.Core.Interfaces;
 
-namespace TechSalaryIdentity.API.Controllers;
+namespace IdentityApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -103,12 +103,25 @@ public class AuthController : ControllerBase
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var emailClaim = User.FindFirst(ClaimTypes.Email)?.Value;
+        var firstNameClaim = User.FindFirst(ClaimTypes.GivenName)?.Value;
+        var lastNameClaim = User.FindFirst(ClaimTypes.Surname)?.Value;
+        var fullNameClaim = User.FindFirst(ClaimTypes.Name)?.Value;
         var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
         var isActiveClaim = User.FindFirst("IsActive")?.Value;
+
+        if ((string.IsNullOrWhiteSpace(firstNameClaim) || string.IsNullOrWhiteSpace(lastNameClaim))
+            && !string.IsNullOrWhiteSpace(fullNameClaim))
+        {
+            var nameParts = fullNameClaim.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+            firstNameClaim ??= nameParts.Length > 0 ? nameParts[0] : string.Empty;
+            lastNameClaim ??= nameParts.Length > 1 ? nameParts[1] : string.Empty;
+        }
 
         var user = new UserDto
         {
             UserId = Guid.TryParse(userIdClaim, out var userId) ? userId : Guid.Empty,
+            FirstName = firstNameClaim ?? string.Empty,
+            LastName = lastNameClaim ?? string.Empty,
             Email = emailClaim ?? string.Empty,
             Role = roleClaim ?? string.Empty,
             IsActive = bool.TryParse(isActiveClaim, out var isActive) && isActive

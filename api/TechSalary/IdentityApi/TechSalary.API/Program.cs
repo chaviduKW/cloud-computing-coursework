@@ -2,9 +2,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using TechSalaryIdentity.API.Services;
-using TechSalaryIdentity.Core.Interfaces;
-using TechSalaryIdentity.Infrastructure.Data;
+using IdentityApi.Services;
+using IdentityApi.Core.Interfaces;
+using IdentityApi.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

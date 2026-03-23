@@ -1,6 +1,6 @@
-using TechSalaryIdentity.Core.DTOs;
+using IdentityApi.Core.DTOs;
 
-namespace TechSalaryIdentity.Core.Interfaces;
+namespace IdentityApi.Core.Interfaces;
 
 public interface IAuthenticationService
 {

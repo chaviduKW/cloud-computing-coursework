@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TechSalaryIdentity.Core.Entities;
+namespace IdentityApi.Core.Entities;
 
 public class AuthRefreshToken
 {

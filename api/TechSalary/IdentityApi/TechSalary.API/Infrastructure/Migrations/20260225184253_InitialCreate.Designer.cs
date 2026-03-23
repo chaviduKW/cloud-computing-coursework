@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using TechSalaryIdentity.Infrastructure.Data;
+using IdentityApi.Infrastructure.Data;
 
 #nullable disable
 
-namespace TechSalaryIdentity.Infrastructure.Migrations
+namespace IdentityApi.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260225184253_InitialCreate")]

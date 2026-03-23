@@ -44,7 +44,7 @@ Update `TechSalary.API/appsettings.json`:
 ```bash
 cd IdentityApi
 dotnet build
-dotnet run --project TechSalary.API/TechSalaryIdentity.API.csproj
+dotnet run --project TechSalary.API/IdentityApi.csproj
 ```
 
 ### 4. Access Swagger UI

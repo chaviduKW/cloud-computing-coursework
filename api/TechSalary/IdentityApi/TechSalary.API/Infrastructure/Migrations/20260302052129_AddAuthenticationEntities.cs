@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TechSalaryIdentity.Infrastructure.Migrations
+namespace IdentityApi.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddAuthenticationEntities : Migration
