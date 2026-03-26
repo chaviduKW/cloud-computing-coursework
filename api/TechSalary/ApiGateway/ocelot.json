@@ -25,12 +25,45 @@
         }
       ],
       "DownstreamPathTemplate": "/api/vote/{submissionId}"
+    },
+
+    {
+      "UpstreamPathTemplate": "/api/salaries",
+      "UpstreamHttpMethod": [ "POST" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5154 }
+      ],
+      "DownstreamPathTemplate": "/api/salaries"
+    },
+
+    {
+      "UpstreamPathTemplate": "/api/salaries/pending",
+      "UpstreamHttpMethod": [ "GET" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5154 }
+      ],
+      "DownstreamPathTemplate": "/api/salaries/pending"
+    },
+
+    {
+      "UpstreamPathTemplate": "/api/salaries/query",
+      "UpstreamHttpMethod": [ "GET" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5154 }
+      ],
+      "DownstreamPathTemplate": "/api/salaries"
     }
+
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5000"
   }
 }
 
-//upstream - requests coming to the api gateway
-//downstream - requests going to the downstream services (microservices)
+
