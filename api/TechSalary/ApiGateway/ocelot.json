@@ -1,6 +1,45 @@
 ﻿{
   "Routes": [
     {
+      "UpstreamPathTemplate": "/api/search",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5254
+        }
+      ],
+      "DownstreamPathTemplate": "/api/search"
+    },
+    {
+      "UpstreamPathTemplate": "/api/search/companies",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5254
+        }
+      ],
+      "DownstreamPathTemplate": "/api/search/companies"
+    },
+    {
+      "UpstreamPathTemplate": "/api/search/designations",
+      "UpstreamHttpMethod": [ "Get" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5254
+        }
+      ],
+      "DownstreamPathTemplate": "/api/search/designations"
+    },
+    {
       "UpstreamPathTemplate": "/api/vote",
       "UpstreamHttpMethod": [ "Post" ],
 
