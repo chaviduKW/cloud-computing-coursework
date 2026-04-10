@@ -8,10 +8,6 @@ using SearchApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Database
-builder.Services.AddDbContext<SearchDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 // HTTP client for SalarySubmissionApi
 builder.Services.AddHttpClient("SalarySubmissionApi", client =>
 {
@@ -21,11 +17,17 @@ builder.Services.AddHttpClient("SalarySubmissionApi", client =>
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
+// HTTP client for VoteApi
+builder.Services.AddHttpClient("VoteApi", client =>
+{
+    var baseUrl = builder.Configuration["Services:VoteApi"]
+        ?? throw new InvalidOperationException("Services:VoteApi is not configured.");
+    client.BaseAddress = new Uri(baseUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 // Services
 builder.Services.AddScoped<ISearchService, SearchService>();
-
-// Cron / background sync
-builder.Services.AddHostedService<SalaryDataSyncService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -38,13 +40,6 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
-// Apply EF migrations automatically on startup
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<SearchDbContext>();
-    db.Database.Migrate();
-}
 
 if (app.Environment.IsDevelopment())
 {

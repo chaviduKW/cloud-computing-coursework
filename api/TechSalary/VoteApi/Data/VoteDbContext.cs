@@ -12,7 +12,7 @@ namespace VoteApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("vote");
+            modelBuilder.HasDefaultSchema("community");
 
             modelBuilder.Entity<Vote>(entity =>
             {
