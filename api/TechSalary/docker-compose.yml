@@ -1,0 +1,140 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: techsalary-postgres
+    environment:
+      POSTGRES_DB: techsalary
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - techsalary-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Identity API - Authentication Service
+  identityapi:
+    build:
+      context: ./IdentityApi/TechSalary.API
+      dockerfile: Dockerfile
+    container_name: techsalary-identityapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+      - Jwt__SecretKey=${JWT_SECRET:-your-super-secret-key-min-32-characters-long-for-security!}
+      - Jwt__Issuer=TechSalaryAPI
+      - Jwt__Audience=TechSalaryClient
+      - Jwt__AccessTokenExpirationMinutes=15
+      - Jwt__RefreshTokenExpirationDays=7
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - techsalary-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Salary Submission API
+  salarysubmissionapi:
+    build:
+      context: ./SalarySubmissionApi
+      dockerfile: Dockerfile
+    container_name: techsalary-salaryapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+      - Authentication__ValidateTokens=false
+    depends_on:
+      - postgres
+    networks:
+      - techsalary-network
+
+  # Search API
+  searchapi:
+    build:
+      context: ./SearchApi
+      dockerfile: Dockerfile
+    container_name: techsalary-searchapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+    depends_on:
+      - postgres
+    networks:
+      - techsalary-network
+
+  # Vote API
+  voteapi:
+    build:
+      context: ./VoteApi
+      dockerfile: Dockerfile
+    container_name: techsalary-voteapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+    depends_on:
+      - postgres
+    networks:
+      - techsalary-network
+
+  # Stats API
+  statsapi:
+    build:
+      context: ./StatsApi
+      dockerfile: Dockerfile
+    container_name: techsalary-statsapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+    depends_on:
+      - postgres
+    networks:
+      - techsalary-network
+
+  # API Gateway - Main Entry Point
+  apigateway:
+    build:
+      context: ./ApiGateway
+      dockerfile: Dockerfile
+    container_name: techsalary-gateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - Jwt__SecretKey=${JWT_SECRET:-your-super-secret-key-min-32-characters-long-for-security!}
+      - Jwt__Issuer=TechSalaryAPI
+      - Jwt__Audience=TechSalaryClient
+    ports:
+      - "5000:80"
+    depends_on:
+      - identityapi
+      - salarysubmissionapi
+      - searchapi
+      - voteapi
+      - statsapi
+    networks:
+      - techsalary-network
+
+volumes:
+  postgres_data:
+
+networks:
+  techsalary-network:
+    driver: bridge

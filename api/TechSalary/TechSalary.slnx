@@ -1,6 +1,8 @@
 <Solution>
   <Folder Name="/ApiGateway/">
-    <Project Path="ApiGateway/ApiGateway.csproj" />
+    <Project Path="ApiGateway/ApiGateway.csproj">
+      <BuildDependency Project="IdentityApi/TechSalary.API/IdentityApi.csproj" />
+    </Project>
   </Folder>
   <Folder Name="/Microservices/">
     <Project Path="IdentityApi/TechSalary.API/IdentityApi.csproj" />
