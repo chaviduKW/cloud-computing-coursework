@@ -1,100 +1,41 @@
-using System.Collections.Immutable;
 using Microsoft.AspNetCore.Mvc;
+using SearchApi.DTOs;
+using SearchApi.Services;
 
 namespace SearchApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class SearchController : ControllerBase
+    [Route("api/[controller]")]
+    public class SearchController(ISearchService searchService) : ControllerBase
     {
-        private static readonly ImmutableArray<SalaryRecord> SalaryRecords =
-        [
-            new SalaryRecord
-            {
-                SalaryAmount = 120000, CompanyName = "Google", Designation = "Software Engineer",
-                SubmittedDate = new DateOnly(2025, 1, 10)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 95000, CompanyName = "Microsoft", Designation = "Software Engineer",
-                SubmittedDate = new DateOnly(2025, 2, 5)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 150000, CompanyName = "Amazon", Designation = "Senior Engineer",
-                SubmittedDate = new DateOnly(2025, 3, 12)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 80000, CompanyName = "StartupX", Designation = "Backend Developer",
-                SubmittedDate = new DateOnly(2024, 12, 20)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 200000, CompanyName = "Google", Designation = "Staff Engineer",
-                SubmittedDate = new DateOnly(2025, 4, 1)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 110000, CompanyName = "Meta", Designation = "Software Engineer",
-                SubmittedDate = new DateOnly(2025, 1, 25)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 175000, CompanyName = "Netflix", Designation = "Senior Engineer",
-                SubmittedDate = new DateOnly(2025, 5, 3)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 90000, CompanyName = "StartupX", Designation = "Frontend Developer",
-                SubmittedDate = new DateOnly(2025, 2, 14)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 140000, CompanyName = "Microsoft", Designation = "Senior Engineer",
-                SubmittedDate = new DateOnly(2025, 3, 30)
-            },
-            new SalaryRecord
-            {
-                SalaryAmount = 70000, CompanyName = "LocalCompany", Designation = "Junior Engineer",
-                SubmittedDate = new DateOnly(2024, 11, 11)
-            }
-        ];
-
+        /// <summary>
+        /// Search salary records with optional filters, sorting, and pagination.
+        /// </summary>
         [HttpGet]
-        public IEnumerable<SalaryRecord> Get(
-            [FromQuery] string? company,
-            [FromQuery] string? designation,
-            [FromQuery] DateOnly? submittedAfter,
-            [FromQuery] DateOnly? submittedBefore)
+        public async Task<ActionResult<SearchResultDto>> Search([FromQuery] SearchQueryDto query, CancellationToken cancellationToken)
         {
-            var query = SalaryRecords.AsEnumerable();
+            var result = await searchService.SearchAsync(query, cancellationToken);
+            return Ok(result);
+        }
 
-            if (!string.IsNullOrWhiteSpace(company))
-            {
-                query = query.Where(x =>
-                    x.CompanyName.Contains(company, StringComparison.OrdinalIgnoreCase));
-            }
+        /// <summary>
+        /// Get a distinct list of all company names in the index.
+        /// </summary>
+        [HttpGet("companies")]
+        public async Task<ActionResult<IEnumerable<string>>> GetCompanies(CancellationToken cancellationToken)
+        {
+            var companies = await searchService.GetCompaniesAsync(cancellationToken);
+            return Ok(companies);
+        }
 
-            if (!string.IsNullOrWhiteSpace(designation))
-            {
-                query = query.Where(x =>
-                    x.Designation.Contains(designation, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (submittedAfter.HasValue)
-            {
-                query = query.Where(x =>
-                    x.SubmittedDate >= submittedAfter.Value);
-            }
-
-            if (submittedBefore.HasValue)
-            {
-                query = query.Where(x =>
-                    x.SubmittedDate <= submittedBefore.Value);
-            }
-
-            return query.ToList();
+        /// <summary>
+        /// Get a distinct list of all designations in the index.
+        /// </summary>
+        [HttpGet("designations")]
+        public async Task<ActionResult<IEnumerable<string>>> GetDesignations(CancellationToken cancellationToken)
+        {
+            var designations = await searchService.GetDesignationsAsync(cancellationToken);
+            return Ok(designations);
         }
     }
 }

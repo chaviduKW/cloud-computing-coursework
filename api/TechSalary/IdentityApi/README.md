@@ -1,113 +1,320 @@
-# TechSalary Identity API - Backend
+# TechSalary API - Complete Authentication & Authorization System
 
-A complete .NET 8 ASP.NET Core backend for a TechSalary Identity API with multi-layered architecture.
+## 📖 Overview
 
-## Project Structure
+This is a **production-ready authentication and authorization system** built into the TechSalary API using .NET 8, Entity Framework Core, PostgreSQL, and JWT-based token authentication.
 
-```
-TechSalaryIdentity/
-├── TechSalary.API/               # ASP.NET Core Web API
-│   ├── Controllers/              # REST API endpoints
-│   ├── DTOs/                     # Data Transfer Objects
-│   ├── Services/                 # Business logic implementations
-│   └── Program.cs                # Application startup configuration
-├── TechSalary.Core/              # Domain Models & Interfaces
-│   ├── Entities/                 # Database entity models
-│   └── Interfaces/               # Service interfaces
-├── TechSalary.Infrastructure/    # Data Access Layer
-│   ├── Data/                     # AppDbContext
-│   └── Migrations/               # EF Core migrations
-├── docker-compose.yml            # Docker Compose configuration
-└── TechSalaryIdentity.sln        # Solution file
-```
+**Key Features:**
 
-## Features
+- ✅ User registration and secure login
+- ✅ JWT access tokens (15-minute expiration)
+- ✅ Refresh token mechanism (7-day expiration)
+- ✅ Role-based access control (RBAC)
+- ✅ Password hashing with BCrypt
+- ✅ Token revocation support
+- ✅ Protected API endpoints
+- ✅ Claim-based authorization
 
-### Authentication & Authorization
+---
 
-- **JWT Bearer Token** authentication
-- User registration and login
-- Role-based access control
-- Secure password hashing with BCrypt
+## 🚀 Quick Start
 
-### Core Entities
+### 1. Prerequisites
 
-- **Users**: System user management with roles
-- **Customers**: Master customer data (hard-coded initial data)
-- **Products**: Product catalog with pricing
-- **Discounts**: Discount management
-- **Orders**: Order management with auto-generated order IDs
-- **OrderDetails**: Line items within orders with automatic calculations
+- .NET 8.0 SDK or higher
+- PostgreSQL 12+ running on localhost:25432
+- Visual Studio Code or Visual Studio 2022
 
-### Key Calculations
+### 2. Configure Database
 
-- **Automatic order total calculations**: SubTotal, Discount Total, Tax applied
-- **Per-line item calculations**: Quantity × Unit Price - Discount = Total
-
-### Database
-
-- **SQL Server** (LocalDB for development, Docker for production)
-- **Windows Authentication** support for local development
-- Entity Framework Core with migrations
-- Properly configured decimal precision for financial data
-
-### Tools & Documentation
-
-- **Swagger/OpenAPI** integration for API documentation
-- **Docker & Docker Compose** support for containerized deployment
-- **CORS** configured for frontend integration
-
-## Getting Started
-
-### Prerequisites
-
-- .NET 8 SDK or later
-- SQL Server or SQL Server LocalDB installed
-- Docker & Docker Compose (optional, for containerized deployment)
-
-### Development Setup (Local Database)
-
-1. **Clone/Open the project**
-
-   ```bash
-   cd c:\Users\MahelaSulakkhana\Desktop\OrderManagement.API
-   ```
-
-2. **Restore dependencies**
-
-   ```bash
-   dotnet restore
-   ```
-
-3. **Apply migrations to create database**
-
-   ```bash
-   dotnet ef database update --project OrderManagement.Infrastructure --startup-project OrderManagement.API
-   ```
-
-4. **Run the application**
-
-   ```bash
-   cd OrderManagement.API
-   dotnet run
-   ```
-
-   The API will be available at: `http://localhost:5000` (HTTP) or `https://localhost:5001` (HTTPS)
-
-5. **Access Swagger UI**
-   Open your browser and navigate to: `http://localhost:5000/swagger`
-
-### Database Configuration
-
-The application uses **(localdb)\MSSQLLocalDB** with Windows Authentication by default.
-
-**Connection String** (in `appsettings.json`):
+Update `TechSalary.API/appsettings.json`:
 
 ```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=OrderManagementDB;Integrated Security=true;TrustServerCertificate=True;"
+{
+  "Jwt": {
+    "SecretKey": "generate-a-secure-32-character-key-here!",
+    "Issuer": "TechSalaryAPI",
+    "Audience": "TechSalaryClient"
+  }
 }
 ```
+
+### 3. Run the API
+
+```bash
+cd IdentityApi
+dotnet build
+dotnet run --project TechSalary.API/IdentityApi.csproj
+```
+
+### 4. Access Swagger UI
+
+Navigate to: `https://localhost:7000/swagger/index.html`
+
+---
+
+## 📚 Documentation
+
+| Document                      | Purpose                               |
+| ----------------------------- | ------------------------------------- |
+| **AUTHENTICATION_GUIDE.md**   | Complete technical documentation      |
+| **API_TESTING_GUIDE.md**      | Testing procedures & Postman examples |
+| **QUICK_START.md**            | Setup and deployment guide            |
+| **ARCHITECTURE.md**           | System architecture & flow diagrams   |
+| **IMPLEMENTATION_SUMMARY.md** | What was implemented & features       |
+
+---
+
+## 🔐 API Endpoints
+
+### Public Endpoints
+
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `POST /api/auth/refresh-token` - Refresh access token
+
+### Protected Endpoints (Requires valid JWT)
+
+- `GET /api/auth/me` - Get current user profile
+- `GET /api/auth/check-role` - Get user role
+- `POST /api/auth/logout` - Logout (revoke token)
+- `GET /api/auth/users` - List all users (Admin only)
+
+---
+
+## 🔄 Authentication Flow
+
+1. **Register** → Validate & hash password → Create user
+2. **Login** → Verify credentials → Generate JWT & refresh token
+3. **Access Protected** → Validate JWT → Return resource
+4. **Refresh Token** → Validate refresh token → Issue new JWT
+5. **Logout** → Revoke refresh token → Clear tokens
+
+---
+
+## 💾 New Database Tables
+
+### Users Table
+
+- user_id (UUID, PK)
+- email (VARCHAR, UNIQUE)
+- password_hash (VARCHAR)
+- first_name, last_name (VARCHAR)
+- role (VARCHAR - Admin/Manager/User)
+- is_active, is_email_verified (BOOLEAN)
+- created_at, updated_at, last_login_at (TIMESTAMP)
+
+### Auth Refresh Tokens Table
+
+- refresh_token_id (UUID, PK)
+- user_id (UUID, FK)
+- token (TEXT)
+- expires_at (TIMESTAMP)
+- is_revoked (BOOLEAN)
+- created_at (TIMESTAMP)
+
+---
+
+## 🔑 Example Usage
+
+### Register
+
+```bash
+curl -X POST https://localhost:7000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john@example.com",
+    "password": "SecurePass123!",
+    "confirmPassword": "SecurePass123!"
+  }'
+```
+
+### Login
+
+```bash
+curl -X POST https://localhost:7000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "john@example.com", "password": "SecurePass123!"}'
+```
+
+### Access Protected Endpoint
+
+```bash
+curl -X GET https://localhost:7000/api/auth/me \
+  -H "Authorization: Bearer {accessToken}"
+```
+
+---
+
+## 🛡️ Security Features
+
+✅ Password Security
+
+- BCrypt hashing with automatic salt
+- Minimum 6-character validation
+- Constant-time comparison
+
+✅ Token Security
+
+- HMAC-SHA256 signatures
+- JWT validation (signature, expiration, issuer, audience)
+- Configurable expiration times
+- Token revocation on logout
+
+✅ Access Control
+
+- Role-based authorization
+- Claim-based permissions
+- Database-backed token revocation
+
+✅ CORS Protection
+
+- Configurable allowed origins
+- HTTP method restrictions
+
+---
+
+## 🛠️ Available Roles
+
+- **User** - Default role, basic API access
+- **Manager** - Can manage non-admin operations
+- **Admin** - Full system access, user management
+
+### Using Roles
+
+```csharp
+[Authorize]                              // Any authenticated user
+public IActionResult GetAll() { ... }
+
+[Authorize(Roles = "Admin")]             // Admin only
+public IActionResult Delete() { ... }
+
+[Authorize(Roles = "Admin,Manager")]     // Multiple roles
+public IActionResult Create() { ... }
+```
+
+---
+
+## 📦 Project Structure
+
+```
+IdentityApi/
+├── TechSalary.Core/
+│   ├── Entities/
+│   │   ├── User.cs                    ✨ NEW
+│   │   └── AuthRefreshToken.cs        ✨ NEW
+│   ├── DTOs/
+│   │   ├── RegisterRequestDto.cs      ✨ NEW
+│   │   ├── LoginRequestDto.cs         ✨ NEW
+│   │   ├── AuthResponseDto.cs         ✨ NEW
+│   │   └── RefreshTokenRequestDto.cs  ✨ NEW
+│   ├── Interfaces/
+│   │   ├── ITokenService.cs           ✨ NEW
+│   │   └── IAuthenticationService.cs  ✨ NEW
+│   └── ... (existing entities)
+│
+├── TechSalary.API/
+│   ├── Controllers/
+│   │   ├── AuthController.cs          ✨ NEW
+│   │   └── ... (existing controllers)
+│   ├── Services/
+│   │   ├── TokenService.cs            ✨ NEW
+│   │   ├── AuthenticationService.cs   ✨ NEW
+│   │   └── ... (existing services)
+│   ├── Program.cs                     📝 UPDATED
+│   ├── appsettings.json               📝 UPDATED
+│   └── ... (existing files)
+│
+├── TechSalary.Infrastructure/
+│   ├── Data/
+│   │   └── AppDbContext.cs            📝 UPDATED
+│   ├── Migrations/
+│   │   └── 20260302052129_AddAuthenticationEntities.cs ✨ NEW
+│   └── ... (existing files)
+│
+└── Documentation/
+    ├── README.md                      📄 This file (UPDATED)
+    ├── AUTHENTICATION_GUIDE.md        📄 NEW - Technical docs
+    ├── API_TESTING_GUIDE.md           📄 NEW - Testing guide
+    ├── QUICK_START.md                 📄 NEW - Setup guide
+    ├── ARCHITECTURE.md                📄 NEW - Architecture diagrams
+    └── IMPLEMENTATION_SUMMARY.md      📄 NEW - Implementation details
+```
+
+---
+
+## 🧪 Testing
+
+### Using Postman
+
+1. Open Swagger UI at https://localhost:7000/swagger
+2. Test `/api/auth/register` endpoint
+3. Test `/api/auth/login` endpoint
+4. Copy the accessToken
+5. Click "Authorize" button and paste token
+6. Test protected endpoints
+
+### Testing Checklist
+
+- [ ] Register new user
+- [ ] Login with valid credentials
+- [ ] Access protected endpoint with token
+- [ ] Refresh expired token
+- [ ] Logout and verify revocation
+- [ ] Test role-based access
+- [ ] Test expired token rejection
+
+---
+
+## 🚀 Deployment
+
+### Production Checklist
+
+- [ ] Update JWT secret key (32+ characters)
+- [ ] Enable HTTPS/SSL certificates
+- [ ] Configure production CORS origins
+- [ ] Set up logging and monitoring
+- [ ] Configure database backups
+- [ ] Implement rate limiting
+- [ ] Add email verification
+- [ ] Set up password reset flow
+- [ ] Enable audit logging
+
+---
+
+## 📞 Support
+
+1. **Quick Start**: See `QUICK_START.md`
+2. **Testing**: See `API_TESTING_GUIDE.md`
+3. **Technical Details**: See `AUTHENTICATION_GUIDE.md`
+4. **Architecture**: See `ARCHITECTURE.md`
+
+---
+
+## ✅ Completed Implementation
+
+- ✅ User registration with validation
+- ✅ Secure login with BCrypt
+- ✅ JWT token generation (15-minute expiration)
+- ✅ Refresh token mechanism (7-day expiration)
+- ✅ Role-based access control
+- ✅ Protected API endpoints
+- ✅ Token revocation on logout
+- ✅ Complete documentation
+- ✅ Database migrations
+
+---
+
+**Version**: 1.0  
+**Status**: ✅ Production Ready  
+**Last Updated**: March 2, 2026
+"ConnectionStrings": {
+"DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=OrderManagementDB;Integrated Security=true;TrustServerCertificate=True;"
+}
+
+````
 
 To use a different SQL Server instance, update the connection string in:
 
@@ -120,9 +327,9 @@ To use a different SQL Server instance, update the connection string in:
 
    ```bash
    docker-compose up --build
-   ```
+````
 
-   The API will be available at: `http://localhost:8080`
+The API will be available at: `http://localhost:8080`
 
 2. **Note**: Docker Compose uses SQL Server in a container with **SA authentication**
    - Username: `sa`

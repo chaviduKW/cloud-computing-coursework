@@ -3,7 +3,7 @@
     <Project Path="ApiGateway/ApiGateway.csproj" />
   </Folder>
   <Folder Name="/Microservices/">
-    <Project Path="IdentityApi/IdentityApi.csproj" />
+    <Project Path="IdentityApi/TechSalary.API/IdentityApi.csproj" />
     <Project Path="SalarySubmissionApi/SalarySubmissionApi.csproj" />
     <Project Path="SearchApi/SearchApi.csproj" />
     <Project Path="StatsApi/StatsApi.csproj" />

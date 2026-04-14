@@ -52,6 +52,7 @@ namespace VoteApi.Services
         {
             var votes = await _repository
                 .GetVotesBySubmissionAsync(submissionId);
+
             var votesDto =  votes.Select(v => new VoteDto
             {
                 UserId = v.UserId,
@@ -62,7 +63,7 @@ namespace VoteApi.Services
             var votesResponse = new VotesResponse()
             {
                 Votes = votesDto,
-                TotalVotes = votes.Count
+                TotalVotes = votes.Sum(v => (int)v.VoteType)
             };
 
             return votesResponse;
