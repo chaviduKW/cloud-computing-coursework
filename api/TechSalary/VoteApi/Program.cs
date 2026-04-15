@@ -6,9 +6,16 @@ using VoteApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // SQL Server Connection
+var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "VoteApiDb";
+var user = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
+var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
+
+var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
+
 builder.Services.AddDbContext<VoteDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Dependency Injection
 builder.Services.AddScoped<IVoteRepository, VoteRepository>();
