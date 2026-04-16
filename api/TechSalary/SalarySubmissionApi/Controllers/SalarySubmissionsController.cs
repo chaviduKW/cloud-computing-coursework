@@ -76,5 +76,8 @@ namespace SalarySubmissionApi.Controllers
             var submissions = await _repository.GetPendingAfterAsync(utcTime);
             return Ok(submissions);
         }
+        
+        // TODO Add company list API
+        // TODO Add designation list API
     }
 }
