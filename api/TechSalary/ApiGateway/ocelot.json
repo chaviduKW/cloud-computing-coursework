@@ -97,8 +97,19 @@
         { "Host": "localhost", "Port": 5154 }
       ],
       "DownstreamPathTemplate": "/api/salaries"
+    },
+    {
+      "UpstreamPathTemplate": "/api/stats",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5178
+        }
+      ],
+      "DownstreamPathTemplate": "/api/stats"
     }
-
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5000"
