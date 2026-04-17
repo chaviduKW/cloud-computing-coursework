@@ -29,10 +29,22 @@ namespace VoteApi.Controllers
         }
 
         // GET: api/votes/{submissionId}
-        [HttpGet("{submissionId}")]
-        public async Task<IActionResult> GetVotes(Guid submissionId)
+        //[HttpGet("{submissionId}")]
+        //public async Task<IActionResult> GetVotes(Guid submissionId)
+        //{
+        //    var result = await _voteService.GetVotesAsync(submissionId);
+
+        //    return Ok(result);
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> GetVotes([FromQuery]Guid? submissionId, [FromQuery]Guid? userId)
         {
-            var result = await _voteService.GetVotesAsync(submissionId);
+            if(submissionId == null && userId == null)
+            {
+                return BadRequest("Please provide at least one query parameter: submissionId or userId.");
+            }
+            var result = await _voteService.GetVotesAsync(submissionId, userId);
 
             return Ok(result);
         }

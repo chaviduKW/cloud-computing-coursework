@@ -39,7 +39,7 @@ namespace VoteApi.Services
             }
 
             var total = await _repository
-                .GetTotalVotesAsync(request.SalarySubmissionId);
+                .GetTotalVotesBySubmissionIdAsync(request.SalarySubmissionId);
 
             return new VoteResponse
             {
@@ -48,14 +48,15 @@ namespace VoteApi.Services
             };
         }
 
-        public async Task<VotesResponse> GetVotesAsync(Guid submissionId)
+        public async Task<VotesResponse> GetVotesAsync(Guid? submissionId, Guid? userId)
         {
             var votes = await _repository
-                .GetVotesBySubmissionAsync(submissionId);
+                .GetVotesAsync(submissionId,userId);
 
             var votesDto =  votes.Select(v => new VoteDto
             {
                 UserId = v.UserId,
+                SubmissionId = v.SalarySubmissionId,
                 VoteType = v.VoteType.ToString(),
                 CreatedAt = v.CreatedAt
             }).ToList();
