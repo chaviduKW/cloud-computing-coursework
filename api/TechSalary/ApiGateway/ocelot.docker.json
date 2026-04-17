@@ -25,6 +25,112 @@
       "UpstreamPathTemplate": "/identity/swagger/{everything}",
       "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "identity"
+    },
+    {
+      "DownstreamPathTemplate": "/api/salaries",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "salarysubmissionapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/salaries",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "salary"
+    },
+    {
+      "DownstreamPathTemplate": "/api/salaries",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "salarysubmissionapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/salaries",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      },
+      "SwaggerKey": "salary"
+    },
+    {
+      "DownstreamPathTemplate": "/api/salaries/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "salarysubmissionapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/salaries/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "salary"
+    },
+    {
+      "DownstreamPathTemplate": "/api/salaries/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "salarysubmissionapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/salaries/{id}",
+      "UpstreamHttpMethod": [ "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      },
+      "SwaggerKey": "salary"
+    },
+    {
+      "DownstreamPathTemplate": "/api/vote/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "voteapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vote/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "SwaggerKey": "vote"
+    },
+    {
+      "DownstreamPathTemplate": "/api/stats",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "statsapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/stats",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "stats"
+    },
+    {
+      "DownstreamPathTemplate": "/api/search/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "searchapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/search/{everything}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "search"
     }
   ],
   "SwaggerEndPoints": [

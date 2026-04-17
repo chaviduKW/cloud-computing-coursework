@@ -6,17 +6,17 @@ services:
     image: postgres:15
     container_name: techsalary-postgres
     environment:
-      POSTGRES_DB: techsalary
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
+      POSTGRES_DB: TechSalaryDB
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
     ports:
-      - "5432:5432"
+      - "25432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - techsalary-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,7 +30,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=TechSalaryDB;Username=keycloak;Password=keycloak
       - Jwt__SecretKey=${JWT_SECRET:-your-super-secret-key-min-32-characters-long-for-security!}
       - Jwt__Issuer=TechSalaryAPI
       - Jwt__Audience=TechSalaryClient
@@ -57,7 +57,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=TechSalaryDB;Username=keycloak;Password=keycloak
       - Authentication__ValidateTokens=false
     depends_on:
       - postgres
@@ -73,7 +73,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=TechSalaryDB;Username=keycloak;Password=keycloak
     depends_on:
       - postgres
     networks:
@@ -88,7 +88,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=TechSalaryDB;Username=keycloak;Password=keycloak
     depends_on:
       - postgres
     networks:
@@ -103,7 +103,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=techsalary;Username=postgres;Password=${DB_PASSWORD:-postgres123}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=TechSalaryDB;Username=keycloak;Password=keycloak
     depends_on:
       - postgres
     networks:

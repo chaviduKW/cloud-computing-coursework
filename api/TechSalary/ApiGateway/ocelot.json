@@ -23,7 +23,26 @@
         }
       ],
       "UpstreamPathTemplate": "/api/salaries",
-      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "salary"
+    },
+    {
+      "DownstreamPathTemplate": "/api/salaries",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/api/salaries",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      },
       "SwaggerKey": "salary"
     },
     {
@@ -36,7 +55,26 @@
         }
       ],
       "UpstreamPathTemplate": "/api/salaries/{id}",
-      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "salary"
+    },
+    {
+      "DownstreamPathTemplate": "/api/salaries/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/api/salaries/{id}",
+      "UpstreamHttpMethod": [ "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      },
       "SwaggerKey": "salary"
     },
     {
@@ -50,6 +88,9 @@
       ],
       "UpstreamPathTemplate": "/api/vote/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
       "SwaggerKey": "vote"
     },
     {
