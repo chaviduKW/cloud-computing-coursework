@@ -6,11 +6,11 @@ namespace SalarySubmissionApi.Data
 {
     public class SalaryRepository
     {
-        private readonly string _connectionString;
+        private readonly NpgsqlConnection _connection;
 
-        public SalaryRepository(IConfiguration configuration)
+        public SalaryRepository(NpgsqlConnection connection)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection")!;
+            _connection = connection;
         }
 
         public async Task CreateAsync(SalarySubmission submission)
@@ -22,8 +22,8 @@ namespace SalarySubmissionApi.Data
                 (@Id, @Country, @Company, @Role, @ExperienceLevel, @SalaryAmount, @Currency, @Anonymize, @Status, @CreatedAt)
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            await connection.ExecuteAsync(sql, submission);
+            await _connection.OpenAsync();
+            await _connection.ExecuteAsync(sql, submission);
         }
  
         public async Task<IEnumerable<SalarySubmission>> GetPendingAsync()
@@ -35,8 +35,8 @@ namespace SalarySubmissionApi.Data
                 ORDER BY created_at DESC
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            return await connection.QueryAsync<SalarySubmission>(sql);
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<SalarySubmission>(sql);
         }
 
         //get all PENDING submissions created after a given time
@@ -60,8 +60,8 @@ namespace SalarySubmissionApi.Data
                 ORDER BY created_at
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            return await connection.QueryAsync<SalarySubmission>(sql, new
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<SalarySubmission>(sql, new
             {
                 CreatedAfter = createdAfter
             });
