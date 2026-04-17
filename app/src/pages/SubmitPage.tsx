@@ -1,15 +1,34 @@
-import { useState } from 'react'
-import { Button, Card, Col, Form, Input, InputNumber, Row, Select, Switch, message, Typography, Result } from 'antd'
+import { useEffect, useState } from 'react'
+import { Button, Card, Col, Form, InputNumber, Row, Select, Switch, message, Typography, Result } from 'antd'
 import { submitSalary } from '../api/salaryApi'
+import { getCompanies, getDesignations } from '../api/searchApi'
 import type { SalarySubmissionRequest } from '../types'
 
-const EXPERIENCE_LEVELS = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal', 'Staff', 'Manager', 'Director']
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'SGD', 'INR', 'JPY', 'LKR']
+
+const COUNTRIES = [
+  'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia', 'Austria', 'Bangladesh',
+  'Belgium', 'Brazil', 'Canada', 'Chile', 'China', 'Colombia', 'Czech Republic', 'Denmark',
+  'Egypt', 'Ethiopia', 'Finland', 'France', 'Germany', 'Ghana', 'Greece', 'Hungary', 'India',
+  'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel', 'Italy', 'Japan', 'Jordan', 'Kenya',
+  'Malaysia', 'Mexico', 'Morocco', 'Netherlands', 'New Zealand', 'Nigeria', 'Norway', 'Pakistan',
+  'Peru', 'Philippines', 'Poland', 'Portugal', 'Romania', 'Russia', 'Saudi Arabia', 'Singapore',
+  'South Africa', 'South Korea', 'Spain', 'Sri Lanka', 'Sweden', 'Switzerland', 'Taiwan',
+  'Thailand', 'Turkey', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States',
+  'Venezuela', 'Vietnam',
+]
 
 export default function SubmitPage() {
   const [form] = Form.useForm<SalarySubmissionRequest>()
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [companies, setCompanies] = useState<string[]>([])
+  const [designations, setDesignations] = useState<string[]>([])
+
+  useEffect(() => {
+    getCompanies().then(setCompanies).catch(() => {})
+    getDesignations().then(setDesignations).catch(() => {})
+  }, [])
 
   const handleFinish = async (values: SalarySubmissionRequest) => {
     setLoading(true)
@@ -55,12 +74,26 @@ export default function SubmitPage() {
           <Row gutter={16}>
             <Col xs={24} sm={12}>
               <Form.Item name="company" label="Company" rules={[{ required: true }]}>
-                <Input placeholder="e.g. Google" />
+                <Select
+                  showSearch
+                  placeholder="Select company"
+                  filterOption={(input, option) =>
+                    (option?.value as string).toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={companies.map((c) => ({ value: c, label: c }))}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
               <Form.Item name="role" label="Role / Designation" rules={[{ required: true }]}>
-                <Input placeholder="e.g. Software Engineer" />
+                <Select
+                  showSearch
+                  placeholder="Select designation"
+                  filterOption={(input, option) =>
+                    (option?.value as string).toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={designations.map((d) => ({ value: d, label: d }))}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -68,16 +101,25 @@ export default function SubmitPage() {
           <Row gutter={16}>
             <Col xs={24} sm={12}>
               <Form.Item name="country" label="Country" rules={[{ required: true }]}>
-                <Input placeholder="e.g. United States" />
+                <Select
+                  showSearch
+                  placeholder="Select country"
+                  filterOption={(input, option) =>
+                    (option?.value as string).toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={COUNTRIES.map((c) => ({ value: c, label: c }))}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
-              <Form.Item name="experienceLevel" label="Experience Level" rules={[{ required: true }]}>
-                <Select placeholder="Select level">
-                  {EXPERIENCE_LEVELS.map((l) => (
-                    <Select.Option key={l} value={l}>{l}</Select.Option>
-                  ))}
-                </Select>
+              <Form.Item name="experienceYears" label="Years of Experience" rules={[{ required: true }]}>
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={0}
+                  max={50}
+                  placeholder="e.g. 5"
+                  addonAfter="yrs"
+                />
               </Form.Item>
             </Col>
           </Row>

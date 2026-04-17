@@ -76,5 +76,13 @@ namespace SalarySubmissionApi.Controllers
             var submissions = await _repository.GetPendingAfterAsync(utcTime);
             return Ok(submissions);
         }
+        
+        // TODO Add company list API
+        // TODO Add designation list API
+        
+        // TODO Add raw data api for stats ( approved submissions only )
+        //  ( filterDto : role, country, company , experienceLevel )
+        //  ( responseDto : SalarySubmission )
+        
     }
 }

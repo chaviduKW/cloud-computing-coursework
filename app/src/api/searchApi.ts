@@ -8,7 +8,7 @@ export async function search(query: SearchQuery): Promise<SearchResult> {
   if (query.company) params.company = query.company
   if (query.designation) params.designation = query.designation
   if (query.location) params.location = query.location
-  if (query.experienceLevel) params.experienceLevel = query.experienceLevel
+  if (query.experienceYears != null) params.experienceYears = query.experienceYears
   if (query.minSalary != null) params.minSalary = query.minSalary
   if (query.maxSalary != null) params.maxSalary = query.maxSalary
   if (query.submittedAfter) params.submittedAfter = query.submittedAfter

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Table, Tag, Tooltip, Button, message } from 'antd'
+import { Table, Tooltip, Button, message } from 'antd'
 import { LikeOutlined, DislikeOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { castVote } from '../api/voteApi'
@@ -12,10 +12,6 @@ interface Props {
   onPageChange: (page: number, pageSize: number) => void
 }
 
-const LEVEL_COLORS: Record<string, string> = {
-  Junior: 'green', Mid: 'blue', Senior: 'purple', Lead: 'orange',
-  Principal: 'red', Staff: 'cyan', Manager: 'volcano', Director: 'magenta',
-}
 
 export default function ResultsTable({ result, loading, onPageChange }: Props) {
   const { isAuthenticated, user } = useAuth()
@@ -39,10 +35,10 @@ export default function ResultsTable({ result, loading, onPageChange }: Props) {
     { title: 'Role', dataIndex: 'role', key: 'role', ellipsis: true },
     { title: 'Country', dataIndex: 'country', key: 'country' },
     {
-      title: 'Level',
+      title: 'Exp.',
       dataIndex: 'experienceLevel',
       key: 'experienceLevel',
-      render: (level: string) => <Tag color={LEVEL_COLORS[level] ?? 'default'}>{level}</Tag>,
+      render: (val: string | number) => `${val} yrs`,
     },
     {
       title: 'Salary',
