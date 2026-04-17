@@ -9,14 +9,22 @@ namespace VoteApi.Services
     public class VoteService : IVoteService
     {
         private readonly IVoteRepository _repository;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
 
-        public VoteService(IVoteRepository repository)
+        private const string SalarySubmissionAPI = "SalarySubmissionApi";
+
+        public VoteService(IVoteRepository repository, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _repository = repository;
+            _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         public async Task<VoteResponse> CastVoteAsync(VoteRequest request)
         {
+            var voteThreashold = _configuration.GetValue<int>("VotingParameters:VoteApprovalThreshold");
+            var isApproved = false;
             var voteType = Enum.Parse<VoteType>(request.VoteType, true);
 
             var existingVote = await _repository
@@ -39,23 +47,31 @@ namespace VoteApi.Services
             }
 
             var total = await _repository
-                .GetTotalVotesAsync(request.SalarySubmissionId);
+                .GetTotalVotesBySubmissionIdAsync(request.SalarySubmissionId);
+
+            if (total >= voteThreashold) 
+            {
+                await ApproveSubmissionAsync(request.SalarySubmissionId);
+                isApproved = true;
+            }
 
             return new VoteResponse
             {
                 SalarySubmissionId = request.SalarySubmissionId,
+                IsApproved = isApproved,
                 TotalVotes = total
             };
         }
 
-        public async Task<VotesResponse> GetVotesAsync(Guid submissionId)
+        public async Task<VotesResponse> GetVotesAsync(Guid? submissionId, Guid? userId)
         {
             var votes = await _repository
-                .GetVotesBySubmissionAsync(submissionId);
+                .GetVotesAsync(submissionId,userId);
 
             var votesDto =  votes.Select(v => new VoteDto
             {
                 UserId = v.UserId,
+                SubmissionId = v.SalarySubmissionId,
                 VoteType = v.VoteType.ToString(),
                 CreatedAt = v.CreatedAt
             }).ToList();
@@ -69,6 +85,18 @@ namespace VoteApi.Services
             return votesResponse;
 
 
+        }
+
+        private async Task<bool> ApproveSubmissionAsync(Guid submissionId)
+        {
+            var client = _httpClientFactory.CreateClient(SalarySubmissionAPI);
+
+            var response = await client.PostAsync(
+                $"/api/salaries/approve/{submissionId}",
+                null
+            );
+
+            return response.IsSuccessStatusCode;
         }
     }
 }

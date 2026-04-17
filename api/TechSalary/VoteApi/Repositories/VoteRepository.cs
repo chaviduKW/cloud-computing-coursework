@@ -33,18 +33,36 @@ namespace VoteApi.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Vote>> GetVotesBySubmissionAsync(Guid submissionId)
-        {
-            return await _context.Votes
-                .Where(v => v.SalarySubmissionId == submissionId)
-                .ToListAsync();
-        }
+        //public async Task<List<Vote>> GetVotesBySubmissionAsync(Guid submissionId)
+        //{
+        //    return await _context.Votes
+        //        .Where(v => v.SalarySubmissionId == submissionId)
+        //        .ToListAsync();
+        //}
 
-        public async Task<int> GetTotalVotesAsync(Guid submissionId)
+        public async Task<int> GetTotalVotesBySubmissionIdAsync(Guid submissionId)
         {
             return await _context.Votes
                 .Where(v => v.SalarySubmissionId == submissionId)
                 .SumAsync(v => (int)v.VoteType);
         }
+
+        public async Task<List<Vote>> GetVotesAsync(Guid? submissionId, Guid? userId)
+        {
+            var query = _context.Votes.AsQueryable();
+
+            if (submissionId.HasValue)
+            {
+                query = query.Where(v => v.SalarySubmissionId == submissionId.Value);
+            }
+
+            if (userId.HasValue)
+            {
+                query = query.Where(v => v.UserId == userId.Value);
+            }
+
+            return await query.ToListAsync();
+        }
+
     }
 }

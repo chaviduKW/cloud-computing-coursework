@@ -3,6 +3,7 @@
     public class VoteDto
     {
         public Guid UserId { get; set; }
+        public Guid SubmissionId { get; set; }
         public string VoteType { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
     }
