@@ -17,6 +17,15 @@ var connectionString = $"Host={host};Port={port};Database={db};Username={user};P
 builder.Services.AddDbContext<VoteDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// HTTP client for SalarySubmissionApi
+builder.Services.AddHttpClient("SalarySubmissionApi", client =>
+{
+    var baseUrl = builder.Configuration["Services:SalarySubmissionApi"]
+        ?? throw new InvalidOperationException("Services:SalarySubmissionApi is not configured.");
+    client.BaseAddress = new Uri(baseUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 // Dependency Injection
 builder.Services.AddScoped<IVoteRepository, VoteRepository>();
 builder.Services.AddScoped<IVoteService, VoteService>();

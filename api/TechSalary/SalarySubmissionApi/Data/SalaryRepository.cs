@@ -66,5 +66,23 @@ namespace SalarySubmissionApi.Data
                 CreatedAfter = createdAfter
             });
         }
+
+        public async Task<bool> ApproveSubmissionAsync(Guid submissionId)
+        {
+            const string sql = """
+                UPDATE salary.submissions
+                SET status = 'APPROVED'
+                WHERE id = @SubmissionId
+            """;
+
+            await _connection.OpenAsync();
+
+            var rowsAffected = await _connection.ExecuteAsync(sql, new
+            {
+                SubmissionId = submissionId
+            });
+
+            return rowsAffected > 0;
+        }
     }
 }

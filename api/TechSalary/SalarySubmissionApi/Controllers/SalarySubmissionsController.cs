@@ -76,13 +76,31 @@ namespace SalarySubmissionApi.Controllers
             var submissions = await _repository.GetPendingAfterAsync(utcTime);
             return Ok(submissions);
         }
-        
+
+        [HttpPost("approve/{submissionId}")]
+        public async Task<IActionResult> ApproveSubmission(
+            [FromRoute] Guid submissionId)
+        {
+            if (submissionId == Guid.Empty)
+                return BadRequest("Invalid submission ID");
+
+            var result = await _repository.ApproveSubmissionAsync(submissionId);
+
+            if (result)
+            {
+                return Ok();
+            }
+
+            return StatusCode(500, "Failed to approve submission");
+        }
+
+
         // TODO Add company list API
         // TODO Add designation list API
-        
+
         // TODO Add raw data api for stats ( approved submissions only )
         //  ( filterDto : role, country, company , experienceLevel )
         //  ( responseDto : SalarySubmission )
-        
+
     }
 }
