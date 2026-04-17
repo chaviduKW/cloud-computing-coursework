@@ -1,82 +1,180 @@
 import { useState } from 'react'
-import { Button, Card, Form, Input, message, Typography } from 'antd'
+import { Alert, Button, Card, Divider, Form, Input, Typography } from 'antd'
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
 import { register } from '../api/authApi'
 import { useAuth } from '../context/AuthContext'
+import { registerSchema, yupRule, type RegisterFormValues } from '../utils/validation'
+import { useToast } from '../hooks/useToast'
+
+const { Title, Text } = Typography
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
+  const [serverError, setServerError] = useState<string | null>(null)
   const { setAuth } = useAuth()
   const navigate = useNavigate()
+  const [form] = Form.useForm<RegisterFormValues>()
+  const toast = useToast()
 
-  const handleFinish = async (values: {
-    firstName: string
-    lastName: string
-    email: string
-    password: string
-    confirmPassword: string
-  }) => {
-    setLoading(true)
+  const handleFinish = async (values: RegisterFormValues) => {
+    // Full schema validation with yup before hitting the API
     try {
-      const res = await register(values)
-      if (!res.success || !res.accessToken || !res.refreshToken || !res.user) {
-        void message.error(res.message || 'Registration failed')
+      await registerSchema.validate(values, { abortEarly: false })
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        form.setFields(
+          err.inner.map((e) => ({ name: e.path as string, errors: [e.message] })),
+        )
         return
       }
-      setAuth(res.accessToken, res.refreshToken, res.user)
-      void message.success('Account created!')
-      navigate('/')
+    }
+
+    setLoading(true)
+    setServerError(null)
+    try {
+      const res = await register(values)
+      if (!res.success) {
+        setServerError(res.message || 'Registration failed. Please try again.')
+        return
+      }
+      // API returned tokens — auto-login the user
+      if (res.accessToken && res.refreshToken && res.user) {
+        setAuth(res.accessToken, res.refreshToken, res.user)
+        toast.success(res.message || 'Account created! Welcome aboard.')
+        navigate('/')
+      } else {
+        // Registration successful but no tokens — redirect to login
+        toast.success(res.message || 'Account created! Please sign in.')
+        navigate('/login')
+      }
     } catch {
-      void message.error('Registration failed.')
+      setServerError('Unable to register. Please try again later.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#f0f2f5' }}>
-      <Card style={{ width: 420 }}>
-        <Typography.Title level={3} style={{ textAlign: 'center', marginBottom: 24 }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        background: '#f0f2f5',
+        padding: '24px 0',
+      }}
+    >
+      <Card style={{ width: 440, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+        <Title level={3} style={{ textAlign: 'center', marginBottom: 4 }}>
           Create Account
-        </Typography.Title>
-        <Form layout="vertical" onFinish={handleFinish} size="large">
-          <Form.Item name="firstName" rules={[{ required: true, message: 'Required' }]}>
-            <Input prefix={<UserOutlined />} placeholder="First Name" />
+        </Title>
+        <Text type="secondary" style={{ display: 'block', textAlign: 'center', marginBottom: 24 }}>
+          Join TechSalary to share and explore salaries
+        </Text>
+
+        {serverError && (
+          <Alert
+            type="error"
+            message={serverError}
+            showIcon
+            closable
+            onClose={() => setServerError(null)}
+            style={{ marginBottom: 16 }}
+          />
+        )}
+
+        <Form form={form} layout="vertical" onFinish={handleFinish} size="large">
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Form.Item
+              name="firstName"
+              label="First Name"
+              style={{ flex: 1, marginBottom: 12 }}
+              rules={[yupRule(registerSchema.fields.firstName)]}
+              validateTrigger={['onBlur', 'onChange']}
+            >
+              <Input prefix={<UserOutlined />} placeholder="John" autoComplete="given-name" />
+            </Form.Item>
+
+            <Form.Item
+              name="lastName"
+              label="Last Name"
+              style={{ flex: 1, marginBottom: 12 }}
+              rules={[yupRule(registerSchema.fields.lastName)]}
+              validateTrigger={['onBlur', 'onChange']}
+            >
+              <Input prefix={<UserOutlined />} placeholder="Doe" autoComplete="family-name" />
+            </Form.Item>
+          </div>
+
+          <Form.Item
+            name="email"
+            label="Email Address"
+            rules={[yupRule(registerSchema.fields.email)]}
+            validateTrigger={['onBlur', 'onChange']}
+          >
+            <Input prefix={<MailOutlined />} placeholder="you@example.com" autoComplete="email" />
           </Form.Item>
-          <Form.Item name="lastName" rules={[{ required: true, message: 'Required' }]}>
-            <Input prefix={<UserOutlined />} placeholder="Last Name" />
+
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[yupRule(registerSchema.fields.password)]}
+            validateTrigger={['onBlur', 'onChange']}
+            extra="Min 8 characters, one uppercase letter and one number"
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Create a strong password"
+              autoComplete="new-password"
+            />
           </Form.Item>
-          <Form.Item name="email" rules={[{ required: true, type: 'email' }]}>
-            <Input prefix={<MailOutlined />} placeholder="Email" />
-          </Form.Item>
-          <Form.Item name="password" rules={[{ required: true, min: 6 }]}>
-            <Input.Password prefix={<LockOutlined />} placeholder="Password" />
-          </Form.Item>
+
           <Form.Item
             name="confirmPassword"
+            label="Confirm Password"
             dependencies={['password']}
             rules={[
-              { required: true },
+              { required: true, message: 'Please confirm your password' },
               ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('password') === value) return Promise.resolve()
-                  return Promise.reject(new Error('Passwords do not match'))
+                validator: async (_, value) => {
+                  if (!value || getFieldValue('password') === value) return
+                  throw new Error('Passwords do not match')
                 },
               }),
             ]}
+            validateTrigger={['onBlur', 'onChange']}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="Confirm Password" />
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Re-enter your password"
+              autoComplete="new-password"
+            />
           </Form.Item>
-          <Form.Item>
+
+          <Form.Item style={{ marginBottom: 8 }}>
             <Button type="primary" htmlType="submit" loading={loading} block>
-              Register
+              Create Account
             </Button>
           </Form.Item>
         </Form>
-        <Typography.Text type="secondary">
-          Already have an account? <Link to="/login">Sign In</Link>
-        </Typography.Text>
+
+        <Divider plain>
+          <Text type="secondary" style={{ fontSize: 13 }}>
+            Already have an account?
+          </Text>
+        </Divider>
+
+        <div style={{ textAlign: 'center' }}>
+          <Text type="secondary">
+            Sign in to your account{' '}
+            <Link to="/login">
+              <strong>Sign In</strong>
+            </Link>
+          </Text>
+        </div>
       </Card>
     </div>
   )
