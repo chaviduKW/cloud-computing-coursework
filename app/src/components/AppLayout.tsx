@@ -12,6 +12,7 @@ import {
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { logout } from '../api/authApi'
+import { useToast } from '../hooks/useToast'
 
 const { Header, Sider, Content } = Layout
 
@@ -27,11 +28,15 @@ export default function AppLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
+  const toast = useToast()
 
   const handleLogout = async () => {
-    if (refreshToken) {
-      try { await logout(refreshToken) } catch { /* ignore */ }
-    }
+    try {
+      if (refreshToken) {
+        const res = await logout(refreshToken)
+        if (res?.message) toast.success(res.message)
+      }
+    } catch { /* ignore network errors on logout */ }
     clearAuth()
     navigate('/login')
   }
