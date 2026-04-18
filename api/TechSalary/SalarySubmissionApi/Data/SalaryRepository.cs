@@ -17,7 +17,7 @@ namespace SalarySubmissionApi.Data
         {
             const string sql = """
                 INSERT INTO salary.submissions
-                (id, country, company, role, experience_level, salary_amount, currency, anonymize, status, created_at)
+                (id, country, company, role, experienceLevel, salaryAmount, currency, anonymize, status, createdAt)
                 VALUES
                 (@Id, @Country, @Company, @Role, @ExperienceLevel, @SalaryAmount, @Currency, @Anonymize, @Status, @CreatedAt)
             """;
@@ -32,7 +32,7 @@ namespace SalarySubmissionApi.Data
                 SELECT *
                 FROM salary.submissions
                 WHERE status = 'PENDING'
-                ORDER BY created_at DESC
+                ORDER BY createdAt DESC
             """;
 
             await _connection.OpenAsync();
@@ -48,8 +48,8 @@ namespace SalarySubmissionApi.Data
                     country,
                     company,
                     role,
-                    experience_level AS ExperienceLevel,
-                    salary_amount AS SalaryAmount,
+                    experienceLevel,
+                    salaryAmount,
                     currency,
                     anonymize,
                     status,
@@ -145,15 +145,15 @@ public async Task<IEnumerable<SalarySubmission>> GetApprovedAsync(SalaryFilterDt
             country,
             company,
             role,
-            experience_level AS ExperienceLevel,
-            salary_amount    AS SalaryAmount,
+            experienceLevel,
+            salaryAmount,
             currency,
             anonymize,
             status,
-            created_at       AS CreatedAt
+            createdAt
         FROM salary.submissions
         WHERE {where}
-        ORDER BY created_at DESC
+        ORDER BY createdAt DESC
     """;
 
     await _connection.OpenAsync();

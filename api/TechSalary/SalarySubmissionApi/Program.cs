@@ -9,9 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // SQL Server Connection
 var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
 var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
-var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "salary";
+var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalary_Submission";
 var user = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
-var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "Thami1028@";
+var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
 
 var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
 
