@@ -85,6 +85,16 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Apply migrations automatically
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<VoteDbContext>();
+    if (!dbContext.Database.CanConnect())
+    {
+        dbContext.Database.Migrate();
+    }
+}
+
 app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
