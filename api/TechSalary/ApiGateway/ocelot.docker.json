@@ -5,12 +5,25 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5178
+          "Host": "identityapi",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/auth/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "identity"
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identityapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/swagger/{everything}",
+      "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "identity"
     },
     {
@@ -18,8 +31,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "salarysubmissionapi",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/salaries",
@@ -31,8 +44,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "salarysubmissionapi",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/salaries",
@@ -50,8 +63,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "salarysubmissionapi",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/salaries/{id}",
@@ -63,8 +76,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "salarysubmissionapi",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/salaries/{id}",
@@ -82,8 +95,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5215
+          "Host": "voteapi",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/vote/{everything}",
@@ -98,8 +111,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "statsapi",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/stats",
@@ -111,39 +124,13 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5254
+          "Host": "searchapi",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/search/{everything}",
       "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "search"
-    },    
-    {
-      "UpstreamPathTemplate": "/api/search/companies",
-      "UpstreamHttpMethod": [ "Get" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5254
-        }
-      ],
-      "DownstreamPathTemplate": "/api/search/companies"
-    },
-    {
-      "UpstreamPathTemplate": "/api/search/designations",
-      "UpstreamHttpMethod": [ "Get" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5254
-        }
-      ],
-      "DownstreamPathTemplate": "/api/search/designations"
     }
   ],
   "SwaggerEndPoints": [
@@ -153,51 +140,10 @@
         {
           "Name": "Identity API",
           "Version": "v1",
-          "Url": "http://localhost:5178/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "salary",
-      "Config": [
-        {
-          "Name": "Salary Submission API",
-          "Version": "v1",
-          "Url": "http://localhost:5002/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "vote",
-      "Config": [
-        {
-          "Name": "Vote API",
-          "Version": "v1",
-          "Url": "http://localhost:5215/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "stats",
-      "Config": [
-        {
-          "Name": "Stats API",
-          "Version": "v1",
-          "Url": "http://localhost:5003/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "search",
-      "Config": [
-        {
-          "Name": "Search API",
-          "Version": "v1",
-          "Url": "http://localhost:5254/swagger/v1/swagger.json"
+          "Url": "http://identityapi:80/swagger/v1/swagger.json"
         }
       ]
     }
-
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5000"
