@@ -85,80 +85,78 @@ namespace SalarySubmissionApi.Data
             return rowsAffected > 0;
         }
 
-        public async Task<IEnumerable<string>> GetCompaniesAsync()
-{
-    const string sql = """
-        SELECT DISTINCT company
-        FROM salary.submissions
-        WHERE status = 'APPROVED'
-        ORDER BY company
-    """;
+        public async Task<IEnumerable<Company>> GetCompaniesAsync()
+        {
+            const string sql = """
+                SELECT *
+                FROM salary.companies
+                ORDER BY companyName
+            """;
 
-    await _connection.OpenAsync();
-    return await _connection.QueryAsync<string>(sql);
-}
-
-public async Task<IEnumerable<string>> GetDesignationsAsync()
-{
-    const string sql = """
-        SELECT DISTINCT role
-        FROM salary.submissions
-        WHERE status = 'APPROVED'
-        ORDER BY role
-    """;
-
-    await _connection.OpenAsync();
-    return await _connection.QueryAsync<string>(sql);
-}
-
-public async Task<IEnumerable<SalarySubmission>> GetApprovedAsync(SalaryFilterDto filter)
-{
-    var conditions = new List<string> { "status = 'APPROVED'" };
-    var parameters = new DynamicParameters();
-
-    if (!string.IsNullOrWhiteSpace(filter.Role))
-    {
-        conditions.Add("role = @Role");
-        parameters.Add("Role", filter.Role);
-    }
-    if (!string.IsNullOrWhiteSpace(filter.Country))
-    {
-        conditions.Add("country = @Country");
-        parameters.Add("Country", filter.Country);
-    }
-    if (!string.IsNullOrWhiteSpace(filter.Company))
-    {
-        conditions.Add("company = @Company");
-        parameters.Add("Company", filter.Company);
-    }
-    if (!string.IsNullOrWhiteSpace(filter.ExperienceLevel))
-    {
-        conditions.Add("experience_level = @ExperienceLevel");
-        parameters.Add("ExperienceLevel", filter.ExperienceLevel);
-    }
-
-    var where = string.Join(" AND ", conditions);
-
-    var sql = $"""
-        SELECT
-            id,
-            country,
-            company,
-            role,
-            experienceLevel,
-            salaryAmount,
-            currency,
-            anonymize,
-            status,
-            createdAt
-        FROM salary.submissions
-        WHERE {where}
-        ORDER BY createdAt DESC
-    """;
-
-    await _connection.OpenAsync();
-    return await _connection.QueryAsync<SalarySubmission>(sql, parameters);
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<Company>(sql);
         }
 
-    }
+        public async Task<IEnumerable<Designation>> GetDesignationsAsync()
+        {
+            const string sql = """
+                SELECT *
+                FROM salary.designations
+                ORDER BY designationName
+            """;
+
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<Designation>(sql);
+        }
+
+        public async Task<IEnumerable<SalarySubmission>> GetApprovedAsync(SalaryFilterDto filter)
+        {
+            var conditions = new List<string> { "status = 'APPROVED'" };
+            var parameters = new DynamicParameters();
+
+            if (!string.IsNullOrWhiteSpace(filter.Role))
+            {
+                conditions.Add("role = @Role");
+                parameters.Add("Role", filter.Role);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.Country))
+            {
+                conditions.Add("country = @Country");
+                parameters.Add("Country", filter.Country);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.Company))
+            {
+                conditions.Add("company = @Company");
+                parameters.Add("Company", filter.Company);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.ExperienceLevel))
+            {
+                conditions.Add("experience_level = @ExperienceLevel");
+                parameters.Add("ExperienceLevel", filter.ExperienceLevel);
+            }
+
+            var where = string.Join(" AND ", conditions);
+
+            var sql = $"""
+                SELECT
+                    id,
+                    country,
+                    company,
+                    role,
+                    experienceLevel,
+                    salaryAmount,
+                    currency,
+                    anonymize,
+                    status,
+                    createdAt
+                FROM salary.submissions
+                WHERE {where}
+                ORDER BY createdAt DESC
+            """;
+
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<SalarySubmission>(sql, parameters);
+                }
+
+        }
 }
