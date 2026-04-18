@@ -68,7 +68,7 @@
 
     {
       "UpstreamPathTemplate": "/api/salaries",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [ "POST", "GET" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
