@@ -1,32 +1,16 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace IdentityApi.Infrastructure.Migrations
+namespace IdentityApi.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAuthenticationEntities : Migration
+    public partial class initialidentitymigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "CustomerCode",
-                table: "Orders",
-                type: "text",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "character varying(450)");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "CustomerCode",
-                table: "Customers",
-                type: "text",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "character varying(450)");
-
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -70,27 +54,6 @@ namespace IdentityApi.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.UpdateData(
-                table: "Customers",
-                keyColumn: "CustomerCode",
-                keyValue: "C001",
-                column: "CreatedAt",
-                value: new DateTime(2026, 3, 2, 5, 21, 29, 573, DateTimeKind.Utc).AddTicks(2892));
-
-            migrationBuilder.UpdateData(
-                table: "Customers",
-                keyColumn: "CustomerCode",
-                keyValue: "C002",
-                column: "CreatedAt",
-                value: new DateTime(2026, 3, 2, 5, 21, 29, 573, DateTimeKind.Utc).AddTicks(2893));
-
-            migrationBuilder.UpdateData(
-                table: "Customers",
-                keyColumn: "CustomerCode",
-                keyValue: "C003",
-                column: "CreatedAt",
-                value: new DateTime(2026, 3, 2, 5, 21, 29, 573, DateTimeKind.Utc).AddTicks(2894));
-
             migrationBuilder.CreateIndex(
                 name: "IX_AuthRefreshTokens_UserId",
                 table: "AuthRefreshTokens",
@@ -111,43 +74,6 @@ namespace IdentityApi.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "CustomerCode",
-                table: "Orders",
-                type: "character varying(450)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "text");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "CustomerCode",
-                table: "Customers",
-                type: "character varying(450)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "text");
-
-            migrationBuilder.UpdateData(
-                table: "Customers",
-                keyColumn: "CustomerCode",
-                keyValue: "C001",
-                column: "CreatedAt",
-                value: new DateTime(2026, 2, 25, 18, 42, 53, 466, DateTimeKind.Utc).AddTicks(170));
-
-            migrationBuilder.UpdateData(
-                table: "Customers",
-                keyColumn: "CustomerCode",
-                keyValue: "C002",
-                column: "CreatedAt",
-                value: new DateTime(2026, 2, 25, 18, 42, 53, 466, DateTimeKind.Utc).AddTicks(171));
-
-            migrationBuilder.UpdateData(
-                table: "Customers",
-                keyColumn: "CustomerCode",
-                keyValue: "C003",
-                column: "CreatedAt",
-                value: new DateTime(2026, 2, 25, 18, 42, 53, 466, DateTimeKind.Utc).AddTicks(172));
         }
     }
 }

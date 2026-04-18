@@ -10,9 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 
-// Database
+// SQL Server Connection
+var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalary_Identity";
+var user = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
+var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
+
+var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // JWT Authentication Configuration
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -92,7 +100,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
+    if (!dbContext.Database.CanConnect())
+    {
+        dbContext.Database.Migrate();
+    }
 }
 
 // Configure the HTTP request pipeline
@@ -102,8 +113,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseCors("AllowFrontend");
+//app.UseHttpsRedirection();
+//app.UseCors("AllowFrontend");
 
 // Add Authentication & Authorization middleware
 app.UseAuthentication();

@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // SQL Server Connection
 var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
 var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
-var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "VoteApiDb";
+var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalary_Community";
 var user = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
 var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
 
