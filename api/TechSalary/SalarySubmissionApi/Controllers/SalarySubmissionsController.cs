@@ -95,12 +95,50 @@ namespace SalarySubmissionApi.Controllers
         }
 
 
-        // TODO Add company list API
-        // TODO Add designation list API
+        // GET /api/salaries/companies
+        // Returns distinct list of companies from approved submissions
+        [HttpGet("companies")]
+        public async Task<IActionResult> GetCompanies()
+        {
+            var companies = await _repository.GetCompaniesAsync();
+            return Ok(companies);
+        }
 
-        // TODO Add raw data api for stats ( approved submissions only )
-        //  ( filterDto : role, country, company , experienceLevel )
-        //  ( responseDto : SalarySubmission )
+        
+        // GET /api/salaries/designations
+        // Returns distinct list of roles/designations from approved submissions
+        [HttpGet("designations")]
+        public async Task<IActionResult> GetDesignations()
+        {
+            var designations = await _repository.GetDesignationsAsync();
+            return Ok(designations);
+        }
+
+
+        // GET /api/salaries/approved?role=...&country=...&company=...&experienceLevel=...
+        // Returns approved submissions filtered by optional query parameters
+        [HttpGet("approved")]
+        public async Task<IActionResult> GetApproved([FromQuery] SalaryFilterDto filter)
+        {
+            var submissions = await _repository.GetApprovedAsync(filter);
+
+            // Apply anonymize: hide company name if flag is set
+            var result = submissions.Select(s => new
+            {
+                s.Id,
+                s.Country,
+                Company         = s.Anonymize ? "Anonymous" : s.Company,
+                s.Role,
+                s.ExperienceLevel,
+                s.SalaryAmount,
+                s.Currency,
+                s.Anonymize,
+                s.Status,
+                s.CreatedAt
+            });
+
+            return Ok(result);
+        }
 
     }
 }
