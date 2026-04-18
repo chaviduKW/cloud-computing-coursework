@@ -68,7 +68,7 @@
 
     {
       "UpstreamPathTemplate": "/api/salaries",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [ "POST", "GET" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -98,6 +98,7 @@
       ],
       "DownstreamPathTemplate": "/api/salaries"
     },
+
     {
       "UpstreamPathTemplate": "/api/stats",
       "UpstreamHttpMethod": [ "Get" ],
@@ -109,11 +110,55 @@
         }
       ],
       "DownstreamPathTemplate": "/api/stats"
+    },
+
+    {
+      "UpstreamPathTemplate": "/api/salaries/companies",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5154 }
+      ],
+      "DownstreamPathTemplate": "/api/salaries/companies"
+    },
+
+    {
+      "UpstreamPathTemplate": "/api/salaries/designations",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5154 }
+      ],
+      "DownstreamPathTemplate": "/api/salaries/designations"
+    },
+
+    {
+      "UpstreamPathTemplate": "/api/salaries/approved",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5154 }
+      ],
+      "DownstreamPathTemplate": "/api/salaries/approved"
+    },
+    
+    {
+      "UpstreamPathTemplate": "/api/salaries/approve/{submissionId}",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "localhost", "Port": 5154 }
+      ],
+      "DownstreamPathTemplate": "/api/salaries/approve/{submissionId}"
     }
+
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5000"
   }
+
+  
+
 }
 
 
