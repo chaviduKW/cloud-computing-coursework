@@ -80,9 +80,6 @@ if (validateTokens)
     }
 }
 
-builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 // Apply migrations automatically
@@ -97,14 +94,6 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("AllowAll");
 
-// Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI();
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

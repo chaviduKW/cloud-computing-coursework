@@ -42,9 +42,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
-// Add Swagger for Ocelot
-builder.Services.AddSwaggerForOcelot(builder.Configuration);
-
 // Add Ocelot
 builder.Services.AddOcelot();
 
@@ -53,17 +50,10 @@ var app = builder.Build();
 // Log startup information
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("API Gateway starting on http://localhost:5000");
-logger.LogInformation("Swagger UI will be available at http://localhost:5000/swagger");
 
 // Enable CORS
 app.UseCors("AllowAll");
 
-// Configure Swagger UI
-app.UseSwaggerForOcelotUI(opt =>
-{
-    opt.PathToSwaggerGenerator = "/swagger/docs";
-    opt.DownstreamSwaggerEndPointBasePath = "/swagger/docs";
-});
 
 // Use Ocelot middleware
 await app.UseOcelot();

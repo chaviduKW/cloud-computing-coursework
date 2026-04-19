@@ -27,7 +27,6 @@ builder.Services.AddScoped<SalaryRepository>();
 
 // Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 // JWT Authentication (Optional - controlled by config)
 var validateTokens = builder.Configuration.GetValue<bool>("Authentication:ValidateTokens");
@@ -79,13 +78,6 @@ logger.LogInformation("Salary Submission API starting on http://localhost:5002")
 // Enable CORS
 app.UseCors("AllowAll");
 
-// Enable Swagger in all environments
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Salary Submission API v1");
-    c.RoutePrefix = "swagger";
-});
 
 if (validateTokens)
 {
@@ -98,6 +90,5 @@ app.MapControllers();
 app.MapGet("/", () => "Salary Submission API is running on http://localhost:5002");
 
 logger.LogInformation("Salary Submission API started successfully!");
-logger.LogInformation("Swagger UI available at http://localhost:5002/swagger");
 
 app.Run();
