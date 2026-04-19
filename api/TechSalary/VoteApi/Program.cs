@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // SQL Server Connection
 var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
 var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
-var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "VoteApiDb";
+var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalary_Community";
 var user = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
 var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
 
@@ -80,21 +80,20 @@ if (validateTokens)
     }
 }
 
-builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
+
+// Apply migrations automatically
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<VoteDbContext>();
+    if (!dbContext.Database.CanConnect())
+    {
+        dbContext.Database.Migrate();
+    }
+}
 
 app.UseCors("AllowAll");
 
-// Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI();
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
