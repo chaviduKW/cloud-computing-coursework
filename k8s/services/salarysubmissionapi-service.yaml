@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: salarysubmissionapi-service
+  name: salarysubmissionapi
   namespace: techsalary
 spec:
   selector:
