@@ -1,50 +1,27 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<StatsApi.Data.IStatsRepository, StatsApi.Data.StatsRepository>();
 
-// JWT Authentication (Optional - controlled by config)
-var validateTokens = builder.Configuration.GetValue<bool>("Authentication:ValidateTokens");
-
-if (validateTokens)
+// CORS Configuration
+builder.Services.AddCors(options =>
 {
-    var jwtSettings = builder.Configuration.GetSection("Jwt");
-    var secretKey = jwtSettings["SecretKey"];
-
-    if (!string.IsNullOrEmpty(secretKey))
-    {
-        var key = Encoding.ASCII.GetBytes(secretKey);
-
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = jwtSettings["Audience"],
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-        builder.Services.AddAuthorization();
-    }
-}
+    options.AddPolicy("AllowAll", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
 
 var app = builder.Build();
+
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Stats API starting on http://localhost:5003");
+logger.LogInformation("Authentication handled by API Gateway");
 
 if (app.Environment.IsDevelopment())
 {
@@ -52,11 +29,10 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseCors("AllowAll");
 
 app.MapControllers();
+
+logger.LogInformation("Stats API started successfully!");
 
 app.Run();

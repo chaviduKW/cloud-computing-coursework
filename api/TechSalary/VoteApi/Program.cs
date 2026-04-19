@@ -1,21 +1,19 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using VoteApi.Data;
 using VoteApi.Repositories;
 using VoteApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// SQL Server Connection
+// Database Connection - Use centralized database
 var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
-var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
-var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalary_Community";
-var user = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
-var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
+var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "25432";
+var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalaryDB";
+var user = Environment.GetEnvironmentVariable("DB_USER") ?? "keycloak";
+var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "keycloak";
 
-var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? $"Host={host};Port={port};Database={db};Username={user};Password={password}";
 
 builder.Services.AddDbContext<VoteDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -32,53 +30,22 @@ builder.Services.AddHttpClient("SalarySubmissionApi", client =>
 // Dependency Injection
 builder.Services.AddScoped<IVoteRepository, VoteRepository>();
 builder.Services.AddScoped<IVoteService, VoteService>();
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
+// CORS Configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .AllowAnyOrigin()   // Allow all domains
-            .AllowAnyHeader()   // Allow all headers
-            .AllowAnyMethod();  // Allow all HTTP methods
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
-
-// JWT Authentication (Optional - controlled by config)
-var validateTokens = builder.Configuration.GetValue<bool>("Authentication:ValidateTokens");
-
-if (validateTokens)
-{
-    var jwtSettings = builder.Configuration.GetSection("Jwt");
-    var secretKey = jwtSettings["SecretKey"];
-
-    if (!string.IsNullOrEmpty(secretKey))
-    {
-        var key = Encoding.ASCII.GetBytes(secretKey);
-
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = jwtSettings["Audience"],
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-        builder.Services.AddAuthorization();
-    }
-}
 
 var app = builder.Build();
 
@@ -92,13 +59,17 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Vote API starting on http://localhost:5215");
+logger.LogInformation("Authentication handled by API Gateway - trusting X-User-* headers");
+
 app.UseCors("AllowAll");
 
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapControllers();
+
+logger.LogInformation("Vote API started successfully!");
 
 app.Run();

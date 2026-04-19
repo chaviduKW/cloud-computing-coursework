@@ -43,6 +43,11 @@
       "RouteClaimsRequirement": {
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
       },
+      "UpstreamHeaderTransform": {
+        "X-User-Id": "{claim:sub}",
+        "X-User-Email": "{claim:http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}",
+        "X-User-Role": "{claim:http://schemas.microsoft.com/ws/2008/06/identity/claims/role}"
+      },
       "SwaggerKey": "salary"
     },
     {
@@ -75,6 +80,11 @@
       "RouteClaimsRequirement": {
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
       },
+      "UpstreamHeaderTransform": {
+        "X-User-Id": "{claim:sub}",
+        "X-User-Email": "{claim:http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}",
+        "X-User-Role": "{claim:http://schemas.microsoft.com/ws/2008/06/identity/claims/role}"
+      },
       "SwaggerKey": "salary"
     },
     {
@@ -90,6 +100,11 @@
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "UpstreamHeaderTransform": {
+        "X-User-Id": "{claim:sub}",
+        "X-User-Email": "{claim:http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}",
+        "X-User-Role": "{claim:http://schemas.microsoft.com/ws/2008/06/identity/claims/role}"
       },
       "SwaggerKey": "vote"
     },
