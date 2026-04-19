@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: voteapi
+  name: identityapi
   namespace: techsalary
 spec:
   selector:
-    app: voteapi
+    app: identityapi
   ports:
     - port: 80
       targetPort: 8080

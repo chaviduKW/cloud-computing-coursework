@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatewayapi
+  namespace: techsalary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gatewayapi
+  template:
+    metadata:
+      labels:
+        app: gatewayapi
+    spec:
+      containers:
+        - name: gatewayapi
+          image: docker.io/chavidukalpana/techsalary-gatewayapi:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: voteapi
+  name: identity
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: voteapi
+      app: identity
   template:
     metadata:
       labels:
-        app: voteapi
+        app: identity
     spec:
       containers:
-        - name: voteapi
-          image: docker.io/chavidukalpana/techsalary-voteapi:latest
+        - name: identity
+          image: docker.io/chavidukalpana/techsalary-identityapi:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

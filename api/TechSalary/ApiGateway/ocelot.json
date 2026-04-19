@@ -161,59 +161,6 @@
       "DownstreamPathTemplate": "/api/search/designations"
     }
   ],
-  "SwaggerEndPoints": [
-    {
-      "Key": "identity",
-      "Config": [
-        {
-          "Name": "Identity API",
-          "Version": "v1",
-          "Url": "http://localhost:5178/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "salary",
-      "Config": [
-        {
-          "Name": "Salary Submission API",
-          "Version": "v1",
-          "Url": "http://localhost:5002/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "vote",
-      "Config": [
-        {
-          "Name": "Vote API",
-          "Version": "v1",
-          "Url": "http://localhost:5215/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "stats",
-      "Config": [
-        {
-          "Name": "Stats API",
-          "Version": "v1",
-          "Url": "http://localhost:5003/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "search",
-      "Config": [
-        {
-          "Name": "Search API",
-          "Version": "v1",
-          "Url": "http://localhost:5254/swagger/v1/swagger.json"
-        }
-      ]
-    }
-
-  ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5000"
   }
