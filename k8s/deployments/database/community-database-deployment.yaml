@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: postgresCommunityDb
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: postgresCommunityDb
   template:
     metadata:
       labels:
-        app: postgres
+        app: postgresCommunityDb
     spec:
       containers:
-        - name: postgres
+        - name: postgresCommunityDb
           image: postgres:16
           ports:
-            - containerPort: 5432
+            - containerPort: 5435
           env:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_SUBMISSION_DB
+                  key: POSTGRES_COMMUNITY_DB
 
             - name: POSTGRES_USER
               valueFrom:
@@ -44,7 +44,7 @@ spec:
       volumes:
         - name: postgres-db
           persistentVolumeClaim:
-            claimName: postgres-storage
+            claimName: postgres-storage-community
         - name: init-script
           configMap:
-            name: submissions-init-script
+            name: community-init-script
