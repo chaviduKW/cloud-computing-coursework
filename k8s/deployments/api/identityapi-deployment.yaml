@@ -24,13 +24,13 @@ spec:
               value: "postgresidentitydb"
 
             - name: DB_PORT
-              value: "5432"
+              value: "5433"
 
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_Identity_DB
+                  key: POSTGRES_IDENTITY_DB
 
             - name: DB_USER
               valueFrom:

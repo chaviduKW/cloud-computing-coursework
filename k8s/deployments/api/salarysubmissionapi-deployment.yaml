@@ -24,7 +24,7 @@ spec:
               value: "postgressubmissionsdb"
 
             - name: DB_PORT
-              value: "5432"
+              value: "5434"
 
             - name: DB_NAME
               valueFrom:
