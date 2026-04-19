@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: identity
+  name: identityapi
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: identity
+      app: identityapi
   template:
     metadata:
       labels:
-        app: identity
+        app: identityapi
     spec:
       containers:
-        - name: identity
+        - name: identityapi
           image: docker.io/chavidukalpana/techsalary-identityapi:latest
           imagePullPolicy: Always
           ports:
