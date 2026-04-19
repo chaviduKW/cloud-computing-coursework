@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: voteapi
+  name: salarysubmissionapi
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: voteapi
+      app: salarysubmissionapi
   template:
     metadata:
       labels:
-        app: voteapi
+        app: salarysubmissionapi
     spec:
       containers:
-        - name: voteapi
-          image: docker.io/chavidukalpana/techsalary-voteapi:latest
+        - name: salarysubmissionapi
+          image: docker.io/chavidukalpana/techsalary-salarysubmissionapi:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -30,7 +30,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_COMMUNITY_DB
+                  key: POSTGRES_SUBMISSION_DB
 
             - name: DB_USER
               valueFrom:

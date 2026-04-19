@@ -23,7 +23,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_DB
+                  key: POSTGRES_SUBMISSION_DB
 
             - name: POSTGRES_USER
               valueFrom:
@@ -36,11 +36,15 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
-
           volumeMounts:
-            - name: pgdata
+            - name: postgres-db
               mountPath: /var/lib/postgresql/data
-
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d/
       volumes:
-        - name: pgdata
-          emptyDir: {}
+        - name: postgres-db
+          persistentVolumeClaim:
+            claimName: postgres-storage
+        - name: init-script
+          configMap:
+            name: submissions-init-script

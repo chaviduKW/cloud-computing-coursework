@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: submissions-init-script
+  namespace: techsalary
+data:
+  init.sql: |
+    CREATE SCHEMA IF NOT EXISTS salary;
+
+    CREATE TABLE IF NOT EXISTS salary.Submissions (
+        Id UUID PRIMARY KEY,
+        Country TEXT NOT NULL,
+        Company TEXT NOT NULL,
+        Role TEXT NOT NULL,
+        ExperienceLevel TEXT,
+        SalaryAmount INT NOT NULL,
+        Currency TEXT NOT NULL,
+        Anonymize BOOLEAN DEFAULT TRUE,
+        Status TEXT DEFAULT 'PENDING',
+        CreatedAt TIMESTAMP WITH TIME ZONE DEFAULT now()
+    );
+
+    CREATE TABLE IF NOT EXISTS salary.Companies (
+        Id SERIAL PRIMARY KEY,
+        CompanyName VARCHAR(200) NOT NULL,
+        Description VARCHAR(500)
+    );
+
+    ALTER TABLE salary.Companies
+    ADD CONSTRAINT uq_companies_companyname UNIQUE (CompanyName);
+
+    INSERT INTO salary.Companies (CompanyName) VALUES
+    ('WSO2'),
+    ('IFS'),
+    ('MillenniumIT'),
+    ('99x'),
+    ('CodeGen'),
+    ('hSenid'),
+    ('Zone24x7'),
+    ('Virtusa'),
+    ('Sysco LABS'),
+    ('OrangeHRM'),
+    ('Creative Software'),
+    ('Epic Lanka'),
+    ('Fortude'),
+    ('LSEG')
+    ON CONFLICT (CompanyName) DO NOTHING;

@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: techsalary-ingress
+  namespace: techsalary
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: techsalary.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gatewayapi-service
+                port:
+                  number: 80
