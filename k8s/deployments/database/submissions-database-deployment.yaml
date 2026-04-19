@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgresSubmissionsDb
+  name: postgressubmissionsdb
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgresSubmissionsDb
+      app: postgressubmissionsdb
   template:
     metadata:
       labels:
-        app: postgresSubmissionsDb
+        app: postgressubmissionsdb
     spec:
       containers:
-        - name: postgresSubmissionsDb
+        - name: postgressubmissionsdb
           image: postgres:16
           ports:
             - containerPort: 5434

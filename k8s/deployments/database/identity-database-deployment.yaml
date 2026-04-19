@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgresIdentityDb
+  name: postgresidentitydb
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgresIdentityDb
+      app: postgresidentitydb
   template:
     metadata:
       labels:
-        app: postgresIdentityDb
+        app: postgresidentitydb
     spec:
       containers:
-        - name: postgresIdentityDb
+        - name: postgresidentitydb
           image: postgres:16
           ports:
             - containerPort: 5433

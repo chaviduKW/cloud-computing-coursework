@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgresCommunityDb
+  name: postgrescommunitydb
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgresCommunityDb
+      app: postgrescommunitydb
   template:
     metadata:
       labels:
-        app: postgresCommunityDb
+        app: postgrescommunitydb
     spec:
       containers:
-        - name: postgresCommunityDb
+        - name: postgrescommunitydb
           image: postgres:16
           ports:
             - containerPort: 5435

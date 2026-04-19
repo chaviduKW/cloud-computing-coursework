@@ -21,7 +21,7 @@ spec:
             - containerPort: 8080
           env:
             - name: DB_HOST
-              value: "postgresSubmissionsDb"
+              value: "postgressubmissionsdb"
 
             - name: DB_PORT
               value: "5432"
