@@ -46,18 +46,18 @@ export type RegisterFormValues = yup.InferType<typeof registerSchema>
 /**
  * Converts a yup field schema into an Ant Design Form rule for inline validation.
  */
-export function yupRule(fieldSchema: yup.Schema | yup.Reference): Rule {
+export function yupRule(fieldSchema: yup.Schema<any> | yup.Reference): Rule {
   return {
     validator: async (_: unknown, value: unknown) => {
-      if (!('validate' in fieldSchema)) return
+      if (typeof (fieldSchema as any).validate !== 'function') return;
       try {
-        await (fieldSchema as yup.Schema).validate(value)
+        await (fieldSchema as yup.Schema<any>).validate(value);
       } catch (err) {
         if (err instanceof yup.ValidationError) {
-          throw new Error(err.message)
+          throw new Error(err.message);
         }
-        throw err
+        throw err;
       }
     },
-  }
+  };
 }
