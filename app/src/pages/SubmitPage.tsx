@@ -6,6 +6,8 @@ import type { SalarySubmissionRequest } from '../types'
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'SGD', 'INR', 'JPY', 'LKR']
 
+const EXPERIENCE_LEVELS = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal', 'Staff', 'Manager', 'Director']
+
 const COUNTRIES = [
   'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia', 'Austria', 'Bangladesh',
   'Belgium', 'Brazil', 'Canada', 'Chile', 'China', 'Colombia', 'Czech Republic', 'Denmark',
@@ -112,14 +114,12 @@ export default function SubmitPage() {
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
-              <Form.Item name="experienceYears" label="Years of Experience" rules={[{ required: true }]}>
-                <InputNumber
-                  style={{ width: '100%' }}
-                  min={0}
-                  max={50}
-                  placeholder="e.g. 5"
-                  addonAfter="yrs"
-                />
+              <Form.Item name="experienceLevel" label="Experience Level" rules={[{ required: true }]}>
+                <Select placeholder="Select level">
+                  {EXPERIENCE_LEVELS.map((l) => (
+                    <Select.Option key={l} value={l}>{l}</Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
