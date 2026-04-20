@@ -17,7 +17,7 @@ namespace SalarySubmissionApi.Data
         {
             const string sql = """
                 INSERT INTO salary.submissions
-                (id, country, company, role, experienceLevel, salaryAmount, currency, anonymize, status, createdAt)
+                (id, country, company, role, "experienceLevel", "salaryAmount", currency, anonymize, status, "createdAt")
                 VALUES
                 (@Id, @Country, @Company, @Role, @ExperienceLevel, @SalaryAmount, @Currency, @Anonymize, @Status, @CreatedAt)
             """;
@@ -25,14 +25,14 @@ namespace SalarySubmissionApi.Data
             await _connection.OpenAsync();
             await _connection.ExecuteAsync(sql, submission);
         }
- 
+
         public async Task<IEnumerable<SalarySubmission>> GetPendingAsync()
         {
             const string sql = """
                 SELECT *
                 FROM salary.submissions
                 WHERE status = 'PENDING'
-                ORDER BY createdAt DESC
+                ORDER BY "createdAt" DESC
             """;
 
             await _connection.OpenAsync();
@@ -53,11 +53,11 @@ namespace SalarySubmissionApi.Data
                     currency,
                     anonymize,
                     status,
-                    created_at AS CreatedAt
+                    createdAt AS CreatedAt
                 FROM salary.submissions
                 WHERE status = 'PENDING'
-                AND created_at > @createdAfter
-                ORDER BY created_at
+                AND CreatedAt > @createdAfter
+                ORDER BY CreatedAt
             """;
 
             await _connection.OpenAsync();
@@ -111,28 +111,31 @@ namespace SalarySubmissionApi.Data
 
         public async Task<IEnumerable<SalarySubmission>> GetApprovedAsync(SalaryFilterDto filter)
         {
+
+            // Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
             var conditions = new List<string> { "status = 'APPROVED'" };
             var parameters = new DynamicParameters();
 
             if (!string.IsNullOrWhiteSpace(filter.Role))
             {
-                conditions.Add("role = @Role");
-                parameters.Add("Role", filter.Role);
+                conditions.Add("role ILIKE @Role");
+                parameters.Add("Role", $"%{filter.Role}%");
             }
             if (!string.IsNullOrWhiteSpace(filter.Country))
             {
-                conditions.Add("country = @Country");
-                parameters.Add("Country", filter.Country);
+                conditions.Add("country ILIKE @Country");
+                parameters.Add("Country", $"%{filter.Country}%");
             }
             if (!string.IsNullOrWhiteSpace(filter.Company))
             {
-                conditions.Add("company = @Company");
-                parameters.Add("Company", filter.Company);
+                conditions.Add("company ILIKE @Company");
+                parameters.Add("Company", $"%{filter.Company}%");
             }
             if (!string.IsNullOrWhiteSpace(filter.ExperienceLevel))
             {
-                conditions.Add("experience_level = @ExperienceLevel");
-                parameters.Add("ExperienceLevel", filter.ExperienceLevel);
+                conditions.Add("experience_level ILIKE @ExperienceLevel");
+                parameters.Add("ExperienceLevel", $"%{filter.ExperienceLevel}%");
             }
 
             var where = string.Join(" AND ", conditions);
@@ -140,23 +143,35 @@ namespace SalarySubmissionApi.Data
             var sql = $"""
                 SELECT
                     id,
-                    country,
+                    country AS Country,
                     company,
                     role,
-                    experienceLevel,
-                    salaryAmount,
+                    "experienceLevel",
+                    "salaryAmount",
                     currency,
                     anonymize,
                     status,
-                    createdAt
+                    "createdAt"
                 FROM salary.submissions
                 WHERE {where}
-                ORDER BY createdAt DESC
+                ORDER BY "createdAt" DESC
             """;
 
             await _connection.OpenAsync();
-            return await _connection.QueryAsync<SalarySubmission>(sql, parameters);
-                }
 
+            var rawData = await _connection.QueryAsync<dynamic>(sql, parameters);
+
+            Console.WriteLine($"--- DEBUG: Database returned {rawData.Count()} rows ---");
+
+            foreach (var row in rawData)
+            {
+                // This will print the actual column names as PostgreSQL sees them
+                Console.WriteLine($"Row Data: {row}");
+            }
+
+
+            return await _connection.QueryAsync<SalarySubmission>(sql, parameters);
         }
+
+    }
 }

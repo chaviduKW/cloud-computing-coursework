@@ -1,4 +1,4 @@
-POST http://localhost:5154/api/salaries
+POST http://localhost:5002/api/salaries
 Content-Type: application/json
 
 {

@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using SalarySubmissionApi.Data;
 using SalarySubmissionApi.Models;
@@ -104,7 +105,7 @@ namespace SalarySubmissionApi.Controllers
             return Ok(companies);
         }
 
-        
+
         // GET /api/salaries/designations
         // Returns distinct list of roles/designations from approved submissions
         [HttpGet("designations")]
@@ -127,7 +128,7 @@ namespace SalarySubmissionApi.Controllers
             {
                 s.Id,
                 s.Country,
-                Company         = s.Anonymize ? "Anonymous" : s.Company,
+                Company = s.Anonymize ? "Anonymous" : s.Company,
                 s.Role,
                 s.ExperienceLevel,
                 s.SalaryAmount,
@@ -137,7 +138,11 @@ namespace SalarySubmissionApi.Controllers
                 s.CreatedAt
             });
 
+            Console.WriteLine($"Filter: Role={filter.Role}, Country={filter.Country}, Company={filter.Company}, ExperienceLevel={filter.ExperienceLevel}");
+
             return Ok(result);
+
+
         }
 
     }

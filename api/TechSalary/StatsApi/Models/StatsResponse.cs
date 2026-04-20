@@ -5,6 +5,8 @@ namespace StatsApi.Models
         public string Role { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public string Company { get; set; } = string.Empty;
+
+        // change to int
         public string ExperienceLevel { get; set; } = string.Empty;
         public decimal AverageSalary { get; set; }
         public decimal MedianSalary { get; set; }
