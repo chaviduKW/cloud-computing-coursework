@@ -45,3 +45,39 @@ data:
     ('Fortude'),
     ('LSEG')
     ON CONFLICT (CompanyName) DO NOTHING;
+
+    CREATE TABLE IF NOT EXISTS salary.Designations (
+    Id SERIAL PRIMARY KEY,
+    DesignationName VARCHAR(200) NOT NULL,
+    Description VARCHAR(500)
+    );
+
+    ALTER TABLE salary.Designations
+    ADD CONSTRAINT uq_designations_designationName UNIQUE (DesignationName);
+
+    INSERT INTO salary.Designations (DesignationName) VALUES
+    ('Associate Software Engineer'),
+    ('Software Engineer'),
+    ('Senior Software Engineer'),
+    ('Associate Technical Lead'),
+    ('Technical Lead'),
+    ('Engineering Manager'),
+    ('Software Architect'),
+    ('Principal Software Engineer'),
+    ('QA Engineer'),
+    ('Senior QA Engineer'),
+    ('DevOps Engineer'),
+    ('Site Reliability Engineer'),
+    ('Full Stack Developer'),
+    ('DevOps Engineer'),
+    ('Site Reliability Engineer'),
+    ('Cloud Engineer'),
+    ('Platform Engineer'),
+    ('Data Engineer'),
+    ('UI/UX Designer'),
+    ('System Administrator'),
+    ('Network Engineer'),
+    ('Security Engineer'),
+    ('Product Owner'),
+    ('Product Manager')
+    ON CONFLICT (DesignationName) DO NOTHING;
