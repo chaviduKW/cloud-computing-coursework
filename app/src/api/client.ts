@@ -13,7 +13,11 @@ const processQueue = (error: unknown, token: string | null) => {
   failedQueue = []
 }
 
-const client = axios.create()
+// If VITE_API_BASE_URL is set, use it directly (e.g. pointing to a remote server).
+// Otherwise fall back to relative URLs so the Vite dev-server proxy handles routing.
+const client = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || '',
+})
 
 // Attach JWT to every request
 client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
@@ -54,7 +58,8 @@ client.interceptors.response.use(
 
       try {
         // Use plain axios (not intercepted client) to avoid loop
-        const { data } = await axios.post('/api/auth/refresh-token', { refreshToken })
+        const baseURL = import.meta.env.VITE_API_BASE_URL || ''
+        const { data } = await axios.post(`${baseURL}/api/auth/refresh-token`, { refreshToken })
 
         if (data?.accessToken) {
           localStorage.setItem('accessToken', data.accessToken)

@@ -8,7 +8,11 @@ export async function castVote(body: VoteRequest): Promise<VoteResponse> {
   return data
 }
 
-export async function getVotes(submissionId: string): Promise<VotesResponse> {
-  const { data } = await client.get<VotesResponse>(`${BASE}/${submissionId}`)
+// Get votes for a specific submission, or all votes for a user if only userId is provided
+export async function getVotes(submissionId?: string, userId?: string): Promise<VotesResponse> {
+  const params: Record<string, string> = {}
+  if (submissionId) params.submissionId = submissionId
+  if (userId) params.userId = userId
+  const { data } = await client.get<VotesResponse>(BASE, { params })
   return data
 }

@@ -32,12 +32,15 @@ interface Props {
   loading: boolean
 }
 
+const EXPERIENCE_LEVELS = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal', 'Staff', 'Manager', 'Director']
+
 interface FormValues {
   company?: string
   designation?: string
   location?: string
-  experienceYears?: number
-  salaryRange?: [number | null, number | null]
+  experienceLevel?: string
+  minSalary?: number
+  maxSalary?: number
   dateRange?: [dayjs.Dayjs, dayjs.Dayjs] | null
   sortBy?: 'date' | 'salary' | 'votes'
   sortOrder?: 'asc' | 'desc'
@@ -47,10 +50,14 @@ export default function SearchFilters({ onSearch, loading }: Props) {
   const [form] = Form.useForm<FormValues>()
   const [companies, setCompanies] = useState<string[]>([])
   const [designations, setDesignations] = useState<string[]>([])
+  const [loadingOptions, setLoadingOptions] = useState(true)
 
   useEffect(() => {
-    getCompanies().then(setCompanies).catch(() => {})
-    getDesignations().then(setDesignations).catch(() => {})
+    Promise.allSettled([getCompanies(), getDesignations()]).then(([c, d]) => {
+      if (c.status === 'fulfilled') setCompanies(c.value)
+      if (d.status === 'fulfilled') setDesignations(d.value)
+      setLoadingOptions(false)
+    })
   }, [])
 
   const handleFinish = (values: FormValues) => {
@@ -58,9 +65,9 @@ export default function SearchFilters({ onSearch, loading }: Props) {
       company: values.company || undefined,
       designation: values.designation || undefined,
       location: values.location || undefined,
-      experienceYears: values.experienceYears ?? undefined,
-      minSalary: values.salaryRange?.[0] ?? undefined,
-      maxSalary: values.salaryRange?.[1] ?? undefined,
+      experienceLevel: values.experienceLevel || undefined,
+      minSalary: values.minSalary ?? undefined,
+      maxSalary: values.maxSalary ?? undefined,
       submittedAfter: values.dateRange?.[0]?.toISOString() ?? undefined,
       submittedBefore: values.dateRange?.[1]?.toISOString() ?? undefined,
       sortBy: values.sortBy ?? 'date',
@@ -89,6 +96,7 @@ export default function SearchFilters({ onSearch, loading }: Props) {
             <Select
               showSearch
               allowClear
+              loading={loadingOptions}
               placeholder="Any company"
               filterOption={(input, option) =>
                 (option?.value as string).toLowerCase().includes(input.toLowerCase())
@@ -102,6 +110,7 @@ export default function SearchFilters({ onSearch, loading }: Props) {
             <Select
               showSearch
               allowClear
+              loading={loadingOptions}
               placeholder="Any role"
               filterOption={(input, option) =>
                 (option?.value as string).toLowerCase().includes(input.toLowerCase())
@@ -124,21 +133,19 @@ export default function SearchFilters({ onSearch, loading }: Props) {
           </Form.Item>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <Form.Item name="experienceYears" label="Experience (yrs)">
-            <InputNumber
-              style={{ width: '100%' }}
-              min={0}
-              max={50}
-              placeholder="Any"
-              addonAfter="yrs"
-            />
+          <Form.Item name="experienceLevel" label="Experience Level">
+            <Select allowClear placeholder="Any level">
+              {EXPERIENCE_LEVELS.map((l) => (
+                <Select.Option key={l} value={l}>{l}</Select.Option>
+              ))}
+            </Select>
           </Form.Item>
         </Col>
       </Row>
 
       <Row gutter={16}>
         <Col xs={24} sm={12} md={6}>
-          <Form.Item label="Min Salary" name={['salaryRange', 0]}>
+          <Form.Item label="Min Salary" name="minSalary">
             <InputNumber
               style={{ width: '100%' }}
               placeholder="0"
@@ -148,7 +155,7 @@ export default function SearchFilters({ onSearch, loading }: Props) {
           </Form.Item>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <Form.Item label="Max Salary" name={['salaryRange', 1]}>
+          <Form.Item label="Max Salary" name="maxSalary">
             <InputNumber
               style={{ width: '100%' }}
               placeholder="No limit"

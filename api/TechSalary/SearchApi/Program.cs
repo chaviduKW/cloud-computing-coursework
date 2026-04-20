@@ -35,6 +35,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Search API starting on http://localhost:5254");
+logger.LogInformation("Authentication handled by API Gateway");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -42,7 +46,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-app.UseAuthorization();
 app.MapControllers();
+
+logger.LogInformation("Search API started successfully!");
 
 app.Run();
