@@ -138,8 +138,6 @@ namespace SalarySubmissionApi.Controllers
                 s.CreatedAt
             });
 
-            Console.WriteLine($"Filter: Role={filter.Role}, Country={filter.Country}, Company={filter.Company}, ExperienceLevel={filter.ExperienceLevel}");
-
             return Ok(result);
 
 

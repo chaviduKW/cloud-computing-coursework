@@ -161,14 +161,6 @@ namespace SalarySubmissionApi.Data
 
             var rawData = await _connection.QueryAsync<dynamic>(sql, parameters);
 
-            Console.WriteLine($"--- DEBUG: Database returned {rawData.Count()} rows ---");
-
-            foreach (var row in rawData)
-            {
-                // This will print the actual column names as PostgreSQL sees them
-                Console.WriteLine($"Row Data: {row}");
-            }
-
 
             return await _connection.QueryAsync<SalarySubmission>(sql, parameters);
         }

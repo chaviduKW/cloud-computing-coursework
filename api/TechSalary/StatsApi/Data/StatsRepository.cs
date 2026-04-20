@@ -35,7 +35,6 @@ public sealed class StatsRepository : IStatsRepository
             // 2. Direct internal call
             var response = await client.GetAsync(requestUri);
 
-            console.WriteLine($"Internal API Call: GET {requestUri} - Status: {response.StatusCode}");
 
             if (!response.IsSuccessStatusCode) return null;
 
