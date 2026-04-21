@@ -12,8 +12,8 @@ using VoteApi.Data;
 namespace VoteApi.Migrations
 {
     [DbContext(typeof(VoteDbContext))]
-    [Migration("20260418164416_initial voteApi migration")]
-    partial class initialvoteApimigration
+    [Migration("20260421192131_community schema new")]
+    partial class communityschemanew
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,19 +30,24 @@ namespace VoteApi.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdat");
 
                     b.Property<Guid>("SalarySubmissionId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("salarysubmissionid");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
 
                     b.Property<int>("VoteType")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("votetype");
 
                     b.HasKey("Id");
 

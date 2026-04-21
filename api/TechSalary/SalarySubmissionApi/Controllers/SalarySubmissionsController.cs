@@ -117,8 +117,8 @@ namespace SalarySubmissionApi.Controllers
 
         // GET /api/salaries/approved?role=...&country=...&company=...&experienceLevel=...
         // Returns approved submissions filtered by optional query parameters
-        [HttpGet("approved")]
-        public async Task<IActionResult> GetApproved([FromQuery] SalaryFilterDto filter)
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll([FromQuery] SalaryFilterDto filter)
         {
             var submissions = await _repository.GetApprovedAsync(filter);
 
