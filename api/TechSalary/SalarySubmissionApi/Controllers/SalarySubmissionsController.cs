@@ -127,7 +127,7 @@ namespace SalarySubmissionApi.Controllers
             {
                 s.Id,
                 s.Country,
-                Company         = s.Anonymize ? "Anonymous" : s.Company,
+                s.Company,
                 s.Role,
                 s.ExperienceLevel,
                 s.SalaryAmount,
