@@ -117,22 +117,22 @@ namespace SalarySubmissionApi.Data
 
             if (!string.IsNullOrWhiteSpace(filter.Role))
             {
-                conditions.Add("role ILIKE @Role");
+                conditions.Add("role = @Role");
                 parameters.Add("Role", filter.Role);
             }
             if (!string.IsNullOrWhiteSpace(filter.Country))
             {
-                conditions.Add("country ILIKE @Country");
+                conditions.Add("country = @Country");
                 parameters.Add("Country", filter.Country);
             }
             if (!string.IsNullOrWhiteSpace(filter.Company))
             {
-                conditions.Add("company ILIKE @Company");
+                conditions.Add("company = @Company");
                 parameters.Add("Company", filter.Company);
             }
             if (!string.IsNullOrWhiteSpace(filter.ExperienceLevel))
             {
-                conditions.Add("experiencelevel ILIKE @ExperienceLevel");
+                conditions.Add("experiencelevel = @ExperienceLevel");
                 parameters.Add("ExperienceLevel", filter.ExperienceLevel);
             }
 
@@ -185,7 +185,9 @@ namespace SalarySubmissionApi.Data
                 parameters.Add("ExperienceLevel", filter.ExperienceLevel);
             }
 
-            var where = string.Join(" AND ", conditions);
+            var whereClause = conditions.Any()
+                ? "WHERE " + string.Join(" AND ", conditions)
+                : "";
 
             var sql = $"""
                         SELECT
@@ -200,7 +202,7 @@ namespace SalarySubmissionApi.Data
                             status,
                             createdat AS CreatedAt
                         FROM salary.submissions
-                        WHERE {where}
+                        {whereClause}
                         ORDER BY createdat DESC
                     """;
 
