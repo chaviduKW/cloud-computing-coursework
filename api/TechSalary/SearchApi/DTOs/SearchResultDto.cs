@@ -22,5 +22,6 @@ namespace SearchApi.DTOs
         public int DownVotes { get; set; }
         public int TotalVotes { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -76,6 +76,7 @@ namespace SearchApi.Services
                     DownVotes = votes.DownVotes,
                     TotalVotes = votes.TotalVotes,
                     CreatedAt = r.CreatedAt,
+                    Status = r.Status
                 };
             }).ToList();
 

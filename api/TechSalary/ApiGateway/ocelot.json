@@ -28,6 +28,8 @@
     },
     {
       "DownstreamPathTemplate": "/api/salaries",
+      "UpstreamPathTemplate": "/api/salaries",
+      "UpstreamHttpMethod": [ "POST" ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -35,20 +37,7 @@
           "Port": 5002
         }
       ],
-      "UpstreamPathTemplate": "/api/salaries",
-      "UpstreamHttpMethod": [ "POST" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
-      },
-      "UpstreamHeaderTransform": {
-        "X-User-Id": "{claim:sub}",
-        "X-User-Email": "{claim:http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}",
-        "X-User-Role": "{claim:http://schemas.microsoft.com/ws/2008/06/identity/claims/role}"
-      },
-      "SwaggerKey": "salary"
+      "AuthenticationOptions": null
     },
     {
       "DownstreamPathTemplate": "/api/salaries/{id}",
