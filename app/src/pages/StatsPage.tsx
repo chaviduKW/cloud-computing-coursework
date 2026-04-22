@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Col, Form, Input, Row, Select, Statistic, Typography, Alert, Spin } from 'antd'
+import { Button, Card, Col, Form, Row, Select, Statistic, Typography, Alert, Spin } from 'antd'
 import { BarChartOutlined } from '@ant-design/icons'
 import { getStats } from '../api/statsApi'
 import { getCompanies, getDesignations } from '../api/searchApi'
