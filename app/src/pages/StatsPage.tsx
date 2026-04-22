@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Col, Form, Input, Row, Select, Statistic, Typography, Alert, Spin } from 'antd'
 import { BarChartOutlined } from '@ant-design/icons'
 import { getStats } from '../api/statsApi'
-import { getCompanies } from '../api/searchApi'
+import { getCompanies, getDesignations } from '../api/searchApi'
 import type { StatsResponse } from '../types'
 
-const EXPERIENCE_LEVELS = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal', 'Staff', 'Manager', 'Director']
+const EXPERIENCE_LEVELS = ['Entry','Junior', 'Mid', 'Senior']
 
 
 const COUNTRIES = [
@@ -29,10 +29,18 @@ export default function StatsPage() {
   const [stats, setStats] = useState<StatsResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [companies, setCompanies] = useState<string[]>([])
+  const [designations, setDesignations] = useState<string[]>([])
 
+  // useEffect(() => {
+  //   getCompanies().then(setCompanies).catch(() => {})
+  // }, [])
   useEffect(() => {
-    getCompanies().then(setCompanies).catch(() => {})
-  }, [])
+      Promise.allSettled([getCompanies(), getDesignations()]).then(([c, d]) => {
+        if (c.status === 'fulfilled') setCompanies(c.value)
+        if (d.status === 'fulfilled') setDesignations(d.value)
+        setLoading(false)
+      })
+    }, [])
 
   const handleFinish = async (values: {
     role?: string
@@ -62,9 +70,18 @@ export default function StatsPage() {
         <Form layout="vertical" onFinish={handleFinish}>
           <Row gutter={16}>
             <Col xs={24} sm={6}>
-              <Form.Item name="role" label="Role">
-                <Input placeholder="e.g. Software Engineer" allowClear />
-              </Form.Item>
+              <Form.Item name="role" label="Designation">
+                <Select
+                  showSearch
+                  allowClear
+                  loading={loading}
+                  placeholder="Any role"
+                  filterOption={(input, option) =>
+                    (option?.value as string).toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={designations.map((d) => ({ value: d, label: d }))}
+                />
+            </Form.Item>
             </Col>
             <Col xs={24} sm={6}>
               <Form.Item name="country" label="Country">
