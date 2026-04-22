@@ -209,5 +209,7 @@ namespace SalarySubmissionApi.Data
             await _connection.OpenAsync();
             return await _connection.QueryAsync<SalarySubmission>(sql, parameters);
         }
+
+
     }
 }

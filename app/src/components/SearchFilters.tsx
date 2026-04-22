@@ -32,7 +32,7 @@ interface Props {
   loading: boolean
 }
 
-const EXPERIENCE_LEVELS = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal', 'Staff', 'Manager', 'Director']
+const EXPERIENCE_LEVELS = ['Entry','Junior', 'Mid', 'Senior']
 
 interface FormValues {
   company?: string

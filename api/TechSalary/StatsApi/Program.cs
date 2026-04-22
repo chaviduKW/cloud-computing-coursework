@@ -6,6 +6,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
+builder.Services.AddHttpClient("SalaryService", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5002/");
+});
+
 builder.Services.AddScoped<StatsApi.Data.IStatsRepository, StatsApi.Data.StatsRepository>();
 
 // CORS Configuration

@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using SalarySubmissionApi.Data;
 using SalarySubmissionApi.Models;
@@ -104,7 +105,7 @@ namespace SalarySubmissionApi.Controllers
             return Ok(companies);
         }
 
-        
+
         // GET /api/salaries/designations
         // Returns distinct list of roles/designations from approved submissions
         [HttpGet("designations")]
@@ -120,6 +121,7 @@ namespace SalarySubmissionApi.Controllers
         [HttpGet("approved")]
         public async Task<IActionResult> GetApproved([FromQuery] SalaryFilterDto filter)
         {
+
             var submissions = await _repository.GetApprovedAsync(filter);
 
             var result = submissions.Select(s => new
@@ -159,6 +161,8 @@ namespace SalarySubmissionApi.Controllers
             });
 
             return Ok(result);
+
+
         }
 
     }
