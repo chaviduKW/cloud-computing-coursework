@@ -4,7 +4,7 @@ using SalarySubmissionApi.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // SQL Server Connection - Use centralized database
-var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "ep-empty-forest-am36362w.c-5.us-east-1.aws.neon.tech";
 var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
 var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "neondb";
 var user = Environment.GetEnvironmentVariable("DB_USER") ?? "neondb_owner";
