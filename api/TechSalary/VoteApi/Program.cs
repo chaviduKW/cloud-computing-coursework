@@ -7,10 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Database Connection - Use centralized database
 var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
-var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "25432";
-var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalaryDB";
-var user = Environment.GetEnvironmentVariable("DB_USER") ?? "keycloak";
-var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "keycloak";
+var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalary_Community";
+var user = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
+var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? $"Host={host};Port={port};Database={db};Username={user};Password={password}";

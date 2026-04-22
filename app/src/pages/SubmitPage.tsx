@@ -6,7 +6,7 @@ import type { SalarySubmissionRequest } from '../types'
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'SGD', 'INR', 'JPY', 'LKR']
 
-const EXPERIENCE_LEVELS = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal', 'Staff', 'Manager', 'Director']
+const EXPERIENCE_LEVELS = ['Entry','Junior', 'Mid', 'Senior']
 
 const COUNTRIES = [
   'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia', 'Austria', 'Bangladesh',

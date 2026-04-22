@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VoteApi.Migrations
 {
     /// <inheritdoc />
-    public partial class initialvoteApimigration : Migration
+    public partial class communityschemanew : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,22 +19,22 @@ namespace VoteApi.Migrations
                 schema: "community",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SalarySubmissionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    VoteType = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    salarysubmissionid = table.Column<Guid>(type: "uuid", nullable: false),
+                    userid = table.Column<Guid>(type: "uuid", nullable: false),
+                    votetype = table.Column<int>(type: "integer", nullable: false),
+                    createdat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_votes", x => x.Id);
+                    table.PrimaryKey("PK_votes", x => x.id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_votes_SalarySubmissionId_UserId",
+                name: "IX_votes_salarysubmissionid_userid",
                 schema: "community",
                 table: "votes",
-                columns: new[] { "SalarySubmissionId", "UserId" },
+                columns: new[] { "salarysubmissionid", "userid" },
                 unique: true);
         }
 

@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using SalarySubmissionApi.Data;
 using SalarySubmissionApi.Models;
@@ -104,7 +105,7 @@ namespace SalarySubmissionApi.Controllers
             return Ok(companies);
         }
 
-        
+
         // GET /api/salaries/designations
         // Returns distinct list of roles/designations from approved submissions
         [HttpGet("designations")]
@@ -120,14 +121,14 @@ namespace SalarySubmissionApi.Controllers
         [HttpGet("approved")]
         public async Task<IActionResult> GetApproved([FromQuery] SalaryFilterDto filter)
         {
+
             var submissions = await _repository.GetApprovedAsync(filter);
 
-            // Apply anonymize: hide company name if flag is set
             var result = submissions.Select(s => new
             {
                 s.Id,
                 s.Country,
-                Company         = s.Anonymize ? "Anonymous" : s.Company,
+                s.Company,
                 s.Role,
                 s.ExperienceLevel,
                 s.SalaryAmount,
@@ -138,6 +139,30 @@ namespace SalarySubmissionApi.Controllers
             });
 
             return Ok(result);
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll([FromQuery] SalaryFilterDto filter)
+        {
+            var submissions = await _repository.GetAllAsync(filter);
+
+            var result = submissions.Select(s => new
+            {
+                s.Id,
+                s.Country,
+                s.Company,
+                s.Role,
+                s.ExperienceLevel,
+                s.SalaryAmount,
+                s.Currency,
+                s.Anonymize,
+                s.Status,
+                s.CreatedAt
+            });
+
+            return Ok(result);
+
+
         }
 
     }

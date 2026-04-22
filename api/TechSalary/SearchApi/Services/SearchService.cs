@@ -107,7 +107,7 @@ namespace SearchApi.Services
         private async Task<List<SalarySubmissionDto>> FetchSubmissionsAsync(CancellationToken cancellationToken)
         {
             var client = httpClientFactory.CreateClient("SalarySubmissionApi");
-            return await client.GetFromJsonAsync<List<SalarySubmissionDto>>("/api/salaries/approved", cancellationToken)
+            return await client.GetFromJsonAsync<List<SalarySubmissionDto>>("/api/salaries/all", cancellationToken)
                 ?? [];
         }
 

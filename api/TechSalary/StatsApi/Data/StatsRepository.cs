@@ -1,84 +1,49 @@
-using Dapper;
-using Npgsql;
+using System.Linq;
+using System.Collections.Generic;
+using System.Net.Http.Json;
 using StatsApi.Models;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace StatsApi.Data;
 
 public sealed class StatsRepository : IStatsRepository
 {
-    private readonly string _connectionString;
 
-    public StatsRepository(IConfiguration configuration)
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public StatsRepository(IHttpClientFactory httpClientFactory)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")!;
+        _httpClientFactory = httpClientFactory;
     }
 
     public async Task<StatsResponse?> CalculateStatsAsync(
-        string? role,
-        string? country,
-        string? company,
-        string? experienceLevel)
+    string? role, string? country, string? company, string? experienceLevel)
     {
-        // #region agent log
-        try
-        {
-            var builder = new NpgsqlConnectionStringBuilder(_connectionString);
-            DebugLogger.Log(
-                runId: "pre-fix",
-                hypothesisId: "H1",
-                location: "StatsRepository.CalculateStatsAsync:before-open",
-                message: "Attempting DB connection",
-                data: new { Host = builder.Host, Port = builder.Port, Database = builder.Database }
-            );
-        }
-        catch
-        {
-            // ignore parsing issues; do not log secrets
-        }
-        // #endregion
+        var client = _httpClientFactory.CreateClient("SalaryService");
 
-        const string sql = """
-            WITH filtered AS (
-              SELECT salary_amount::numeric AS salary_amount
-              FROM salary.submissions
-              WHERE status = 'APPROVED'
-                AND (@role IS NULL OR role ILIKE @role)
-                AND (@country IS NULL OR country ILIKE @country)
-                AND (@company IS NULL OR company ILIKE @company)
-                AND (@experienceLevel IS NULL OR experience_level ILIKE @experienceLevel)
-            )
-            SELECT
-              COUNT(*)::int AS RecordCount,
-              COALESCE(AVG(salary_amount), 0)::numeric AS AverageSalary,
-              COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY salary_amount), 0)::numeric AS MedianSalary,
-              COALESCE(PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY salary_amount), 0)::numeric AS P25Salary,
-              COALESCE(PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY salary_amount), 0)::numeric AS P75Salary
-            FROM filtered;
-            """;
+        var queryParams = new Dictionary<string, string?>();
+        if (!string.IsNullOrEmpty(role)) queryParams.Add("role", role);
+        if (!string.IsNullOrEmpty(country)) queryParams.Add("country", country);
+        if (!string.IsNullOrEmpty(company)) queryParams.Add("company", company);
+        if (!string.IsNullOrEmpty(experienceLevel)) queryParams.Add("experienceLevel", experienceLevel);
 
-        await using var connection = new NpgsqlConnection(_connectionString);
+        // 1. Build the request URI with query parameters
+        var requestUri = QueryHelpers.AddQueryString("/api/salaries/approved", queryParams);
 
         try
         {
-            var row = await connection.QuerySingleAsync<StatsRow>(sql, new
-            {
-                role,
-                country,
-                company,
-                experienceLevel
-            });
+            // 2. Direct internal call
+            var response = await client.GetAsync(requestUri);
 
-            // #region agent log
-            DebugLogger.Log(
-                runId: "pre-fix",
-                hypothesisId: "H2",
-                location: "StatsRepository.CalculateStatsAsync:after-query",
-                message: "Query executed",
-                data: new { row.RecordCount });
-            // #endregion
 
-            if (row.RecordCount <= 0)
-                return null;
+            if (!response.IsSuccessStatusCode) return null;
+
+            var salaries = await response.Content.ReadFromJsonAsync<List<SalarySubmissionDto>>();
+
+            if (salaries == null || !salaries.Any()) return null;
+
+            // 3. Calculation logic
+            var amounts = salaries.Select(s => s.SalaryAmount).OrderBy(a => a).ToList();
 
             return new StatsResponse
             {
@@ -86,35 +51,33 @@ public sealed class StatsRepository : IStatsRepository
                 Country = country ?? "ALL",
                 Company = company ?? "ALL",
                 ExperienceLevel = experienceLevel ?? "ALL",
-                RecordCount = row.RecordCount,
-                AverageSalary = row.AverageSalary,
-                MedianSalary = row.MedianSalary,
-                P25Salary = row.P25Salary,
-                P75Salary = row.P75Salary,
+                RecordCount = amounts.Count,
+                AverageSalary = (decimal)amounts.Average(),
+                MedianSalary = Math.Round(GetPercentile(amounts, 0.5), 2),
+                P25Salary = Math.Round(GetPercentile(amounts, 0.25), 2),
+                P75Salary = Math.Round(GetPercentile(amounts, 0.75), 2),
                 GeneratedAt = DateTime.UtcNow
             };
         }
         catch (Exception ex)
         {
-            // #region agent log
-            DebugLogger.Log(
-                runId: "pre-fix",
-                hypothesisId: "H1",
-                location: "StatsRepository.CalculateStatsAsync:exception",
-                message: "DB query failed",
-                data: new { ex.GetType().FullName, ex.Message });
-            // #endregion
+            // Log that the internal call failed
+            Console.WriteLine($"Internal API Call Failed: {ex.Message}");
             throw;
         }
     }
 
-    private sealed class StatsRow
+    private decimal GetPercentile(List<int> sortedData, double percentile)
     {
-        public int RecordCount { get; init; }
-        public decimal AverageSalary { get; init; }
-        public decimal MedianSalary { get; init; }
-        public decimal P25Salary { get; init; }
-        public decimal P75Salary { get; init; }
+        if (sortedData.Count == 0) return 0;
+        double realIndex = percentile * (sortedData.Count - 1);
+        int index = (int)realIndex;
+        double fraction = realIndex - index;
+
+        if (index + 1 < sortedData.Count)
+            return sortedData[index] * (decimal)(1 - fraction) + sortedData[index + 1] * (decimal)fraction;
+
+        return sortedData[index];
     }
 }
 

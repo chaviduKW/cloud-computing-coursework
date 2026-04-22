@@ -6,12 +6,11 @@ namespace SalarySubmissionApi.Data
 {
     public class SalaryRepository
     {
-        private readonly string _connectionString;
+        private readonly NpgsqlConnection _connection;
 
-        public SalaryRepository(IConfiguration configuration)
+        public SalaryRepository(NpgsqlConnection connection)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Database connection string is not configured.");
+            _connection = connection;
         }
 
         public async Task CreateAsync(SalarySubmission submission)
@@ -23,8 +22,8 @@ namespace SalarySubmissionApi.Data
                 (@Id, @Country, @Company, @Role, @ExperienceLevel, @SalaryAmount, @Currency, @Anonymize, @Status, @CreatedAt)
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            await connection.ExecuteAsync(sql, submission);
+            await _connection.OpenAsync();
+            await _connection.ExecuteAsync(sql, submission);
         }
 
         public async Task<IEnumerable<SalarySubmission>> GetPendingAsync()
@@ -46,8 +45,8 @@ namespace SalarySubmissionApi.Data
                 ORDER BY createdat DESC
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            return await connection.QueryAsync<SalarySubmission>(sql);
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<SalarySubmission>(sql);
         }
 
         public async Task<IEnumerable<SalarySubmission>> GetPendingAfterAsync(DateTime createdAfter)
@@ -70,8 +69,8 @@ namespace SalarySubmissionApi.Data
                 ORDER BY createdat
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            return await connection.QueryAsync<SalarySubmission>(sql, new { CreatedAfter = createdAfter });
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<SalarySubmission>(sql, new { CreatedAfter = createdAfter });
         }
 
         public async Task<bool> ApproveSubmissionAsync(Guid submissionId)
@@ -82,8 +81,8 @@ namespace SalarySubmissionApi.Data
                 WHERE id = @SubmissionId
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            var rowsAffected = await connection.ExecuteAsync(sql, new { SubmissionId = submissionId });
+            await _connection.OpenAsync();
+            var rowsAffected = await _connection.ExecuteAsync(sql, new { SubmissionId = submissionId });
             return rowsAffected > 0;
         }
 
@@ -95,8 +94,8 @@ namespace SalarySubmissionApi.Data
                 ORDER BY companyname
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            return await connection.QueryAsync<string>(sql);
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<string>(sql);
         }
 
         public async Task<IEnumerable<string>> GetDesignationsAsync()
@@ -107,8 +106,8 @@ namespace SalarySubmissionApi.Data
                 ORDER BY designationname
             """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            return await connection.QueryAsync<string>(sql);
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<string>(sql);
         }
 
         public async Task<IEnumerable<SalarySubmission>> GetApprovedAsync(SalaryFilterDto filter)
@@ -140,24 +139,77 @@ namespace SalarySubmissionApi.Data
             var where = string.Join(" AND ", conditions);
 
             var sql = $"""
-                SELECT
-                    id,
-                    country,
-                    company,
-                    role,
-                    experiencelevel AS ExperienceLevel,
-                    salaryamount AS SalaryAmount,
-                    currency,
-                    anonymize,
-                    status,
-                    createdat AS CreatedAt
-                FROM salary.submissions
-                WHERE {where}
-                ORDER BY createdat DESC
-            """;
+                        SELECT
+                            id,
+                            country,
+                            company,
+                            role,
+                            experiencelevel AS ExperienceLevel,
+                            salaryamount AS SalaryAmount,
+                            currency,
+                            anonymize,
+                            status,
+                            createdat AS CreatedAt
+                        FROM salary.submissions
+                        WHERE {where}
+                        ORDER BY createdat DESC
+                    """;
 
-            await using var connection = new NpgsqlConnection(_connectionString);
-            return await connection.QueryAsync<SalarySubmission>(sql, parameters);
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<SalarySubmission>(sql, parameters);
         }
+
+        public async Task<IEnumerable<SalarySubmission>> GetAllAsync(SalaryFilterDto filter)
+        {
+            var conditions = new List<string>();
+            var parameters = new DynamicParameters();
+
+            if (!string.IsNullOrWhiteSpace(filter.Role))
+            {
+                conditions.Add("role = @Role");
+                parameters.Add("Role", filter.Role);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.Country))
+            {
+                conditions.Add("country = @Country");
+                parameters.Add("Country", filter.Country);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.Company))
+            {
+                conditions.Add("company = @Company");
+                parameters.Add("Company", filter.Company);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.ExperienceLevel))
+            {
+                conditions.Add("experiencelevel = @ExperienceLevel");
+                parameters.Add("ExperienceLevel", filter.ExperienceLevel);
+            }
+
+            var whereClause = conditions.Any()
+                ? "WHERE " + string.Join(" AND ", conditions)
+                : "";
+
+            var sql = $"""
+                        SELECT
+                            id,
+                            country,
+                            company,
+                            role,
+                            experiencelevel AS ExperienceLevel,
+                            salaryamount AS SalaryAmount,
+                            currency,
+                            anonymize,
+                            status,
+                            createdat AS CreatedAt
+                        FROM salary.submissions
+                        {whereClause}
+                        ORDER BY createdat DESC
+                    """;
+
+            await _connection.OpenAsync();
+            return await _connection.QueryAsync<SalarySubmission>(sql, parameters);
+        }
+
+
     }
 }
