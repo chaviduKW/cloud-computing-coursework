@@ -1,10 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Card, Col, Form, Input, Row, Select, Statistic, Typography, Alert, Spin } from 'antd'
 import { BarChartOutlined } from '@ant-design/icons'
 import { getStats } from '../api/statsApi'
+import { getCompanies } from '../api/searchApi'
 import type { StatsResponse } from '../types'
 
 const EXPERIENCE_LEVELS = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal', 'Staff', 'Manager', 'Director']
+
+
+const COUNTRIES = [
+  'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia', 'Austria', 'Bangladesh',
+  'Belgium', 'Brazil', 'Canada', 'Chile', 'China', 'Colombia', 'Czech Republic', 'Denmark',
+  'Egypt', 'Ethiopia', 'Finland', 'France', 'Germany', 'Ghana', 'Greece', 'Hungary', 'India',
+  'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel', 'Italy', 'Japan', 'Jordan', 'Kenya',
+  'Malaysia', 'Mexico', 'Morocco', 'Netherlands', 'New Zealand', 'Nigeria', 'Norway', 'Pakistan',
+  'Peru', 'Philippines', 'Poland', 'Portugal', 'Romania', 'Russia', 'Saudi Arabia', 'Singapore',
+  'South Africa', 'South Korea', 'Spain', 'Sri Lanka', 'Sweden', 'Switzerland', 'Taiwan',
+  'Thailand', 'Turkey', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States',
+  'Venezuela', 'Vietnam',
+]
 
 function formatSalary(val: number) {
   return `$${val.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
@@ -14,6 +28,11 @@ export default function StatsPage() {
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState<StatsResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [companies, setCompanies] = useState<string[]>([])
+
+  useEffect(() => {
+    getCompanies().then(setCompanies).catch(() => {})
+  }, [])
 
   const handleFinish = async (values: {
     role?: string
@@ -49,12 +68,28 @@ export default function StatsPage() {
             </Col>
             <Col xs={24} sm={6}>
               <Form.Item name="country" label="Country">
-                <Input placeholder="e.g. United States" allowClear />
+                <Select
+                  showSearch
+                  placeholder="Select country"
+                  allowClear
+                  filterOption={(input, option) =>
+                    (option?.value as string).toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={COUNTRIES.map((c) => ({ value: c, label: c }))}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} sm={6}>
               <Form.Item name="company" label="Company">
-                <Input placeholder="e.g. Google" allowClear />
+                <Select
+                  showSearch
+                  placeholder="Select company"
+                  allowClear
+                  filterOption={(input, option) =>
+                    (option?.value as string).toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={companies.map((c) => ({ value: c, label: c }))}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} sm={6}>
