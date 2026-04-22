@@ -25,7 +25,10 @@ export default function RegisterPage() {
     } catch (err) {
       if (err instanceof yup.ValidationError) {
         form.setFields(
-          err.inner.map((e) => ({ name: e.path as string, errors: [e.message] })),
+          err.inner.map((e) => ({
+            name: e.path as (keyof RegisterFormValues),
+            errors: [e.message],
+          }))
         )
         return
       }
@@ -92,7 +95,7 @@ export default function RegisterPage() {
               name="firstName"
               label="First Name"
               style={{ flex: 1, marginBottom: 12 }}
-              rules={[yupRule(registerSchema.fields.firstName)]}
+              rules={[yupRule(registerSchema.fields.firstName as yup.StringSchema)]}
               validateTrigger={['onBlur', 'onChange']}
             >
               <Input prefix={<UserOutlined />} placeholder="John" autoComplete="given-name" />
@@ -102,7 +105,7 @@ export default function RegisterPage() {
               name="lastName"
               label="Last Name"
               style={{ flex: 1, marginBottom: 12 }}
-              rules={[yupRule(registerSchema.fields.lastName)]}
+              rules={[yupRule(registerSchema.fields.lastName as yup.StringSchema)]}
               validateTrigger={['onBlur', 'onChange']}
             >
               <Input prefix={<UserOutlined />} placeholder="Doe" autoComplete="family-name" />
@@ -112,7 +115,7 @@ export default function RegisterPage() {
           <Form.Item
             name="email"
             label="Email Address"
-            rules={[yupRule(registerSchema.fields.email)]}
+            rules={[yupRule(registerSchema.fields.email as yup.StringSchema)]}
             validateTrigger={['onBlur', 'onChange']}
           >
             <Input prefix={<MailOutlined />} placeholder="you@example.com" autoComplete="email" />
@@ -121,7 +124,7 @@ export default function RegisterPage() {
           <Form.Item
             name="password"
             label="Password"
-            rules={[yupRule(registerSchema.fields.password)]}
+            rules={[yupRule(registerSchema.fields.password as yup.StringSchema)]}
             validateTrigger={['onBlur', 'onChange']}
             extra="Min 8 characters, one uppercase letter and one number"
           >

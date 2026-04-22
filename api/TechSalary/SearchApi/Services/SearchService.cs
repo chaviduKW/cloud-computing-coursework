@@ -91,20 +91,22 @@ namespace SearchApi.Services
 
         public async Task<IEnumerable<string>> GetCompaniesAsync(CancellationToken cancellationToken = default)
         {
-            var submissions = await FetchSubmissionsAsync(cancellationToken);
-            return submissions.Select(r => r.Company).Distinct().OrderBy(c => c);
+            var client = httpClientFactory.CreateClient("SalarySubmissionApi");
+            return await client.GetFromJsonAsync<IEnumerable<string>>("/api/salaries/companies", cancellationToken)
+                ?? Enumerable.Empty<string>();
         }
 
         public async Task<IEnumerable<string>> GetDesignationsAsync(CancellationToken cancellationToken = default)
         {
-            var submissions = await FetchSubmissionsAsync(cancellationToken);
-            return submissions.Select(r => r.Role).Distinct().OrderBy(d => d);
+            var client = httpClientFactory.CreateClient("SalarySubmissionApi");
+            return await client.GetFromJsonAsync<IEnumerable<string>>("/api/salaries/designations", cancellationToken)
+                ?? Enumerable.Empty<string>();
         }
 
         private async Task<List<SalarySubmissionDto>> FetchSubmissionsAsync(CancellationToken cancellationToken)
         {
             var client = httpClientFactory.CreateClient("SalarySubmissionApi");
-            return await client.GetFromJsonAsync<List<SalarySubmissionDto>>("/api/salaries/pending", cancellationToken)
+            return await client.GetFromJsonAsync<List<SalarySubmissionDto>>("/api/salaries/all", cancellationToken)
                 ?? [];
         }
 

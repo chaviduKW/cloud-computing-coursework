@@ -23,12 +23,20 @@ namespace VoteApi.Repositories
 
         public async Task AddAsync(Vote vote)
         {
+            // Ensure CreatedAt is always UTC
+            if (vote.CreatedAt.Kind != DateTimeKind.Utc)
+                vote.CreatedAt = DateTime.SpecifyKind(vote.CreatedAt, DateTimeKind.Utc);
+
             await _context.Votes.AddAsync(vote);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Vote vote)
         {
+            // Ensure CreatedAt is always UTC
+            if (vote.CreatedAt.Kind != DateTimeKind.Utc)
+                vote.CreatedAt = DateTime.SpecifyKind(vote.CreatedAt, DateTimeKind.Utc);
+
             _context.Votes.Update(vote);
             await _context.SaveChangesAsync();
         }

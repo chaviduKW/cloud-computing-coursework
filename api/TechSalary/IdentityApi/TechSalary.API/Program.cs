@@ -10,14 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 
-// SQL Server Connection
+// Database Connection - Use centralized database
 var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
 var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
 var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "TechSalary_Identity";
 var user = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
 var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "12345";
 
-var connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? $"Host={host};Port={port};Database={db};Username={user};Password={password}";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));

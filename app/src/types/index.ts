@@ -37,7 +37,7 @@ export interface SalarySubmissionRequest {
   country: string
   company: string
   role: string
-  experienceYears: number
+  experienceLevel: string
   salaryAmount: number
   currency: string
   anonymize: boolean
@@ -62,7 +62,7 @@ export interface SearchQuery {
   company?: string
   designation?: string
   location?: string
-  experienceYears?: number
+  experienceLevel?: string
   minSalary?: number
   maxSalary?: number
   submittedAfter?: string

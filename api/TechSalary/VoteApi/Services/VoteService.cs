@@ -79,7 +79,9 @@ namespace VoteApi.Services
             var votesResponse = new VotesResponse()
             {
                 Votes = votesDto,
-                TotalVotes = votes.Sum(v => (int)v.VoteType)
+                TotalVotes = votes.Sum(v => (int)v.VoteType),
+                UpVoteCount = votes.Count(v => v.VoteType == VoteType.UpVote),
+                DownVoteCount = votes.Count(v => v.VoteType == VoteType.DownVote)
             };
 
             return votesResponse;

@@ -17,7 +17,7 @@ namespace SalarySubmissionApi.Data
         {
             const string sql = """
                 INSERT INTO salary.submissions
-                (id, country, company, role, "experienceLevel", "salaryAmount", currency, anonymize, status, "createdAt")
+                (id, country, company, role, experiencelevel, salaryamount, currency, anonymize, status, createdat)
                 VALUES
                 (@Id, @Country, @Company, @Role, @ExperienceLevel, @SalaryAmount, @Currency, @Anonymize, @Status, @CreatedAt)
             """;
@@ -29,17 +29,26 @@ namespace SalarySubmissionApi.Data
         public async Task<IEnumerable<SalarySubmission>> GetPendingAsync()
         {
             const string sql = """
-                SELECT *
+                SELECT
+                    id,
+                    country,
+                    company,
+                    role,
+                    experiencelevel AS ExperienceLevel,
+                    salaryamount AS SalaryAmount,
+                    currency,
+                    anonymize,
+                    status,
+                    createdat AS CreatedAt
                 FROM salary.submissions
                 WHERE status = 'PENDING'
-                ORDER BY "createdAt" DESC
+                ORDER BY createdat DESC
             """;
 
             await _connection.OpenAsync();
             return await _connection.QueryAsync<SalarySubmission>(sql);
         }
 
-        //get all PENDING submissions created after a given time
         public async Task<IEnumerable<SalarySubmission>> GetPendingAfterAsync(DateTime createdAfter)
         {
             const string sql = """
@@ -48,23 +57,20 @@ namespace SalarySubmissionApi.Data
                     country,
                     company,
                     role,
-                    experienceLevel,
-                    salaryAmount,
+                    experiencelevel AS ExperienceLevel,
+                    salaryamount AS SalaryAmount,
                     currency,
                     anonymize,
                     status,
-                    createdAt AS CreatedAt
+                    createdat AS CreatedAt
                 FROM salary.submissions
                 WHERE status = 'PENDING'
-                AND CreatedAt > @createdAfter
-                ORDER BY CreatedAt
+                AND createdat > @CreatedAfter
+                ORDER BY createdat
             """;
 
             await _connection.OpenAsync();
-            return await _connection.QueryAsync<SalarySubmission>(sql, new
-            {
-                CreatedAfter = createdAfter
-            });
+            return await _connection.QueryAsync<SalarySubmission>(sql, new { CreatedAfter = createdAfter });
         }
 
         public async Task<bool> ApproveSubmissionAsync(Guid submissionId)
@@ -76,37 +82,32 @@ namespace SalarySubmissionApi.Data
             """;
 
             await _connection.OpenAsync();
-
-            var rowsAffected = await _connection.ExecuteAsync(sql, new
-            {
-                SubmissionId = submissionId
-            });
-
+            var rowsAffected = await _connection.ExecuteAsync(sql, new { SubmissionId = submissionId });
             return rowsAffected > 0;
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesAsync()
+        public async Task<IEnumerable<string>> GetCompaniesAsync()
         {
             const string sql = """
-                SELECT *
+                SELECT companyname
                 FROM salary.companies
-                ORDER BY companyName
+                ORDER BY companyname
             """;
 
             await _connection.OpenAsync();
-            return await _connection.QueryAsync<Company>(sql);
+            return await _connection.QueryAsync<string>(sql);
         }
 
-        public async Task<IEnumerable<Designation>> GetDesignationsAsync()
+        public async Task<IEnumerable<string>> GetDesignationsAsync()
         {
             const string sql = """
-                SELECT *
+                SELECT designationname
                 FROM salary.designations
-                ORDER BY designationName
+                ORDER BY designationname
             """;
 
             await _connection.OpenAsync();
-            return await _connection.QueryAsync<Designation>(sql);
+            return await _connection.QueryAsync<string>(sql);
         }
 
         public async Task<IEnumerable<SalarySubmission>> GetApprovedAsync(SalaryFilterDto filter)
@@ -136,26 +137,30 @@ namespace SalarySubmissionApi.Data
             {
                 conditions.Add("experience_level ILIKE @ExperienceLevel");
                 parameters.Add("ExperienceLevel", $"%{filter.ExperienceLevel}%");
+                conditions.Add("experiencelevel = @ExperienceLevel");
+                parameters.Add("ExperienceLevel", filter.ExperienceLevel);
             }
 
-            var where = string.Join(" AND ", conditions);
+            var whereClause = conditions.Any()
+                ? "WHERE " + string.Join(" AND ", conditions)
+                : "";
 
             var sql = $"""
-                SELECT
-                    id,
-                    country AS Country,
-                    company,
-                    role,
-                    "experienceLevel",
-                    "salaryAmount",
-                    currency,
-                    anonymize,
-                    status,
-                    "createdAt"
-                FROM salary.submissions
-                WHERE {where}
-                ORDER BY "createdAt" DESC
-            """;
+                        SELECT
+                            id,
+                            country,
+                            company,
+                            role,
+                            experiencelevel AS ExperienceLevel,
+                            salaryamount AS SalaryAmount,
+                            currency,
+                            anonymize,
+                            status,
+                            createdat AS CreatedAt
+                        FROM salary.submissions
+                        {whereClause}
+                        ORDER BY createdat DESC
+                    """;
 
             await _connection.OpenAsync();
 

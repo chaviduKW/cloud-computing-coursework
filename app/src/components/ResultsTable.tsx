@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './ResultsTable.css'
 import { Table, Tooltip, Button, message } from 'antd'
 import { LikeOutlined, DislikeOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
@@ -10,10 +11,11 @@ interface Props {
   result: SearchResult | null
   loading: boolean
   onPageChange: (page: number, pageSize: number) => void
+  userVotes?: Record<string, 'UpVote' | 'DownVote'>
 }
 
 
-export default function ResultsTable({ result, loading, onPageChange }: Props) {
+export default function ResultsTable({ result, loading, onPageChange, userVotes }: Props) {
   const { isAuthenticated, user } = useAuth()
   const [votingId, setVotingId] = useState<string | null>(null)
 
@@ -35,10 +37,9 @@ export default function ResultsTable({ result, loading, onPageChange }: Props) {
     { title: 'Role', dataIndex: 'role', key: 'role', ellipsis: true },
     { title: 'Country', dataIndex: 'country', key: 'country' },
     {
-      title: 'Exp.',
+      title: 'Exp. Level',
       dataIndex: 'experienceLevel',
       key: 'experienceLevel',
-      render: (val: string | number) => `${val} yrs`,
     },
     {
       title: 'Salary',
@@ -50,36 +51,63 @@ export default function ResultsTable({ result, loading, onPageChange }: Props) {
       title: 'Votes',
       key: 'votes',
       align: 'center',
-      render: (_, record) => (
-        <span style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
-          <Tooltip title={isAuthenticated ? 'Upvote' : 'Sign in to vote'}>
-            <Button
-              type="text"
-              size="small"
-              icon={<LikeOutlined />}
-              style={{ color: '#52c41a' }}
-              loading={votingId === `${record.id}-UPVOTE`}
-              disabled={!isAuthenticated}
-              onClick={() => handleVote(record, 'UPVOTE')}
-            >
-              {record.upVotes}
-            </Button>
-          </Tooltip>
-          <Tooltip title={isAuthenticated ? 'Downvote' : 'Sign in to vote'}>
-            <Button
-              type="text"
-              size="small"
-              icon={<DislikeOutlined />}
-              style={{ color: '#ff4d4f' }}
-              loading={votingId === `${record.id}-DOWNVOTE`}
-              disabled={!isAuthenticated}
-              onClick={() => handleVote(record, 'DOWNVOTE')}
-            >
-              {record.downVotes}
-            </Button>
-          </Tooltip>
-        </span>
-      ),
+      render: (_, record) => {
+        const voted = userVotes && userVotes[record.id];
+        return (
+          <span style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
+            <Tooltip title={isAuthenticated ? 'Upvote' : 'Sign in to vote'}>
+              <Button
+                type="text"
+                size="small"
+                icon={
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    background: voted === 'UpVote' ? '#e6f7ff' : 'transparent',
+                  }}>
+                    <LikeOutlined style={{ color: voted === 'UpVote' ? '#1890ff' : '#52c41a', fontSize: 18 }} />
+                  </span>
+                }
+                style={{ color: voted === 'UpVote' ? '#1890ff' : '#52c41a' }}
+                loading={votingId === `${record.id}-UPVOTE`}
+                disabled={!isAuthenticated}
+                onClick={() => handleVote(record, 'UPVOTE')}
+              >
+                {voted === 'UpVote' ? 1 : record.upVotes}
+              </Button>
+            </Tooltip>
+            <Tooltip title={isAuthenticated ? 'Downvote' : 'Sign in to vote'}>
+              <Button
+                type="text"
+                size="small"
+                icon={
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    background: voted === 'DownVote' ? '#fff1f0' : 'transparent',
+                  }}>
+                    <DislikeOutlined style={{ color: voted === 'DownVote' ? '#d32029' : '#ff4d4f', fontSize: 18 }} />
+                  </span>
+                }
+                style={{ color: voted === 'DownVote' ? '#d32029' : '#ff4d4f' }}
+                loading={votingId === `${record.id}-DOWNVOTE`}
+                disabled={!isAuthenticated}
+                onClick={() => handleVote(record, 'DOWNVOTE')}
+              >
+                {voted === 'DownVote' ? 1 : record.downVotes}
+              </Button>
+            </Tooltip>
+          </span>
+        );
+      },
     },
     {
       title: 'Submitted',
