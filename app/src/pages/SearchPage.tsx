@@ -64,12 +64,13 @@ export default function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Prepare filtered data for upvoted and downvoted tables
+  // Prepare filtered data for upvoted, downvoted, and pending tables
   const allResults = result?.results ?? [];
   const upvotedResults = allResults.filter((r) => userVotes[r.id] === 'UpVote');
   const downvotedResults = allResults.filter((r) => userVotes[r.id] === 'DownVote');
+  const pendingResults = allResults.filter((r) => r.status === 'PENDING');
 
-  const [activeTab, setActiveTab] = useState<'all' | 'up' | 'down'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'up' | 'down' | 'pending'>('all');
 
   let tableTitle = 'All Salaries';
   let tableResult = result;
@@ -90,6 +91,16 @@ export default function SearchPage() {
       ...result,
       results: downvotedResults,
       totalCount: downvotedResults.length,
+      page: 1,
+      totalPages: 1,
+      pageSize,
+    };
+  } else if (activeTab === 'pending') {
+    tableTitle = 'Pending Salaries';
+    tableResult = {
+      ...result,
+      results: pendingResults,
+      totalCount: pendingResults.length,
       page: 1,
       totalPages: 1,
       pageSize,
@@ -122,8 +133,15 @@ export default function SearchPage() {
             <Button
               type={activeTab === 'down' ? 'primary' : 'default'}
               onClick={() => setActiveTab('down')}
+              style={{ marginRight: 8 }}
             >
               Down Voted
+            </Button>
+            <Button
+              type={activeTab === 'pending' ? 'primary' : 'default'}
+              onClick={() => setActiveTab('pending')}
+            >
+              Pending
             </Button>
           </div>
         </div>
@@ -132,6 +150,8 @@ export default function SearchPage() {
           loading={loading}
           onPageChange={activeTab === 'all' ? handlePageChange : () => {}}
           userVotes={userVotes}
+          currentQuery={currentQuery}
+          onRefresh={handleSearch}
         />
       </Card>
     </>
