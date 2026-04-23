@@ -8,7 +8,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddHttpClient("SalaryService", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5002/");
+    client.BaseAddress = new Uri("http://salarysubmissionapi.techsalary/");
 });
 
 builder.Services.AddScoped<StatsApi.Data.IStatsRepository, StatsApi.Data.StatsRepository>();
