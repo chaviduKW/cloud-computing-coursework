@@ -3,16 +3,10 @@ kind: Service
 metadata:
   name: frontend
   namespace: techsalary
-  labels:
-    app: frontend
-    version: v1
 spec:
-  type: ClusterIP
   selector:
     app: frontend
   ports:
-    - name: http
-      port: 80
+    - port: 80
       targetPort: 80
-      protocol: TCP
-  sessionAffinity: None
+  type: ClusterIP
