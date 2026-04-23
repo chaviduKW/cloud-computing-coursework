@@ -1,10 +1,11 @@
+import publicClient from './publicClient'
 import client from './client'
 import type { SalarySubmission, SalarySubmissionRequest } from '../types'
 
 const BASE = '/api/salaries'
 
 export async function submitSalary(body: SalarySubmissionRequest): Promise<SalarySubmission> {
-  const { data } = await client.post<SalarySubmission>(BASE, body)
+  const { data } = await publicClient.post<SalarySubmission>(BASE, body)
   return data
 }
 
