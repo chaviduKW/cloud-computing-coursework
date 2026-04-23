@@ -25,7 +25,6 @@ namespace StatsApi.Controllers
         {
             var stats = await _repository.CalculateStatsAsync(role, country, company, experienceLevel);
 
-            Console.WriteLine(stats);
             if (stats == null) stats = new StatsResponse
             {
                 AverageSalary = 0,
