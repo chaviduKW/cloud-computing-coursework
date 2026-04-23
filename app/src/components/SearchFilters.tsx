@@ -150,7 +150,7 @@ export default function SearchFilters({ onSearch, loading }: Props) {
               style={{ width: '100%' }}
               placeholder="0"
               min={0}
-              formatter={(v) => (v ? `$ ${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')}
+              formatter={(v) => (v ? `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')}
             />
           </Form.Item>
         </Col>
@@ -160,7 +160,7 @@ export default function SearchFilters({ onSearch, loading }: Props) {
               style={{ width: '100%' }}
               placeholder="No limit"
               min={0}
-              formatter={(v) => (v ? `$ ${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')}
+              formatter={(v) => (v ? `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')}
             />
           </Form.Item>
         </Col>

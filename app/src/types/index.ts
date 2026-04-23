@@ -85,6 +85,7 @@ export interface SalaryRecord {
   downVotes: number
   totalVotes: number
   createdAt: string
+  status: string
 }
 
 export interface SearchResult {
