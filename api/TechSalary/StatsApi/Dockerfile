@@ -1,22 +1,27 @@
-# Build Stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+# -------- Build image --------
+FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
 
 # Copy only the project file to cache layers
 COPY ["StatsApi.csproj", "./"]
-RUN dotnet restore
+RUN dotnet restore "StatsApi.csproj"
 
 # Copy everything else and publish
 COPY . .
-RUN dotnet publish -c Release -o /app/publish
+
+RUN dotnet build "StatsApi.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "StatsApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime Stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app/publish .
-
-# Standardize on port 8080 for K8s compatibility
-ENV ASPNETCORE_URLS=http://+:8080
-EXPOSE 8080
+COPY --from=publish /app/publish .
 
 ENTRYPOINT ["dotnet", "StatsApi.dll"]
