@@ -15,5 +15,6 @@ export async function getStats(query: StatsQuery): Promise<StatsResponse> {
   if (query.company) params.company = query.company
   if (query.experienceLevel) params.experienceLevel = query.experienceLevel
   const { data } = await client.get<StatsResponse>('/api/stats', { params })
+
   return data
 }

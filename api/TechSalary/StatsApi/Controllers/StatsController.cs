@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using StatsApi.Data;
+using StatsApi.Models;
 
 namespace StatsApi.Controllers
 {
@@ -23,10 +24,20 @@ namespace StatsApi.Controllers
             [FromQuery] string? experienceLevel)
         {
             var stats = await _repository.CalculateStatsAsync(role, country, company, experienceLevel);
-            
-            if (stats == null)
-                return NotFound("No approved data found for these filters.");
 
+            if (stats == null) stats = new StatsResponse
+            {
+                AverageSalary = 0,
+                MedianSalary = 0,
+                P25Salary = 0,
+                P75Salary = 0,
+                RecordCount = 0,
+                GeneratedAt = DateTime.UtcNow,
+                Role = role,
+                Country = country,
+                Company = company,
+                ExperienceLevel = experienceLevel
+            };
             return Ok(stats);
         }
     }
