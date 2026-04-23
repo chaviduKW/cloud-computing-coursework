@@ -5,17 +5,18 @@ import { LikeOutlined, DislikeOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { castVote } from '../api/voteApi'
 import { useAuth } from '../context/AuthContext'
-import type { SalaryRecord, SearchResult } from '../types'
+import type { SalaryRecord, SearchResult, SearchQuery } from '../types'
 
 interface Props {
   result: SearchResult | null
   loading: boolean
   onPageChange: (page: number, pageSize: number) => void
   userVotes?: Record<string, 'UpVote' | 'DownVote'>
+  currentQuery: SearchQuery
+  onRefresh: (query: SearchQuery) => void
 }
 
-
-export default function ResultsTable({ result, loading, onPageChange, userVotes }: Props) {
+export default function ResultsTable({ result, loading, onPageChange, userVotes, currentQuery, onRefresh }: Props) {
   const { isAuthenticated, user } = useAuth()
   const [votingId, setVotingId] = useState<string | null>(null)
 
@@ -24,6 +25,10 @@ export default function ResultsTable({ result, loading, onPageChange, userVotes 
     setVotingId(`${record.id}-${voteType}`)
     try {
       await castVote({ salarySubmissionId: record.id, userId: user.userId, voteType })
+      
+      // Refresh search results to show updated vote counts
+      await onRefresh(currentQuery)
+      
       void message.success('Vote recorded!')
     } catch {
       void message.error('Failed to cast vote.')
