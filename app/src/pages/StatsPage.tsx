@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, Col, Form, Input, Row, Select, Statistic, Typography, Alert, Spin } from 'antd'
+import { Button, Card, Col, Form, Row, Select, Statistic, Typography, Alert, Spin, Result } from 'antd'
 import { BarChartOutlined } from '@ant-design/icons'
 import { getStats } from '../api/statsApi'
 import { getCompanies, getDesignations } from '../api/searchApi'
@@ -53,8 +53,9 @@ export default function StatsPage() {
     try {
       const data = await getStats(values)
       setStats(data)
-    } catch {
-      setError('Failed to load stats. Make sure the Stats API is running.')
+    } catch(error) {
+      // setError('Failed to load stats. Make sure the Stats API is running.')
+      return [];
     } finally {
       setLoading(false)
     }
@@ -128,7 +129,15 @@ export default function StatsPage() {
       {loading && <Spin size="large" style={{ display: 'block', margin: '40px auto' }} />}
       {error && <Alert type="error" message={error} style={{ marginBottom: 16 }} />}
 
-      {stats && !loading && (
+      {stats && !loading && stats.recordCount === 0 && (
+        <Result
+          status="info"
+          title="No Data Found"
+          subTitle="No approved salary data matches the selected filters."
+        />
+      )}
+
+      {stats && !loading && stats.recordCount > 0 && (
         <>
           <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
             <Col xs={12} sm={6}>
