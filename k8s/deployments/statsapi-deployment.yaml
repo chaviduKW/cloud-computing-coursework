@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: statsapi
+  namespace: techsalary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: statsapi
+  template:
+    metadata:
+      labels:
+        app: statsapi
+    spec:
+      containers:
+      - name: statsapi
+        image: docker.io/yashodhichathurangi/statsapi:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: salarysubmissionapi
+          value: "http://salarysubmissionapi.techsalary"
