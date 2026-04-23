@@ -5,18 +5,18 @@ metadata:
   namespace: techsalary
 data:
   init.sql: |
-    -- Create schema
+    -- Ensure schema exists
     CREATE SCHEMA IF NOT EXISTS community;
 
     -- Create votes table
-    CREATE TABLE IF NOT EXISTS community.votes (
-        Id UUID PRIMARY KEY,
-        SalarySubmissionId UUID NOT NULL,
-        UserId UUID NOT NULL,
-        VoteType INTEGER NOT NULL,
-        CreatedAt TIMESTAMP WITH TIME ZONE NOT NULL
+    CREATE TABLE IF NOT EXISTS community."votes" (
+        "id" UUID PRIMARY KEY,
+        "salarysubmissionid" UUID NOT NULL,
+        "userid" UUID NOT NULL,
+        "votetype" INTEGER NOT NULL,
+        "createdat" TIMESTAMP WITH TIME ZONE NOT NULL
     );
 
-    -- Unique composite index (SalarySubmissionId + UserId)
-    CREATE UNIQUE INDEX IF NOT EXISTS IX_votes_SalarySubmissionId_UserId
-    ON community.votes (SalarySubmissionId, UserId);
+    -- Unique index on salarysubmissionid + userid
+    CREATE UNIQUE INDEX IF NOT EXISTS "IX_votes_salarysubmissionid_userid"
+    ON community."votes" ("salarysubmissionid", "userid");
