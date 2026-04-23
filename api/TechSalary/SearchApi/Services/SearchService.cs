@@ -117,16 +117,17 @@ namespace SearchApi.Services
             try
             {
                 var response = await client.GetFromJsonAsync<DTOs.VotesResponseDto>(
-                    $"/api/vote/{submissionId}", cancellationToken);
+                    $"/api/vote?submissionId={submissionId}", cancellationToken);
 
                 if (response is null)
                     return (submissionId, 0, 0, 0);
 
-                var upVotes = response.Votes.Count(v => v.VoteType.Equals("UP", StringComparison.OrdinalIgnoreCase));
-                var downVotes = response.Votes.Count(v => v.VoteType.Equals("DOWN", StringComparison.OrdinalIgnoreCase));
+                var upVotes = response.Votes.Count(v => v.VoteType.Equals("UPVOTE", StringComparison.OrdinalIgnoreCase));
+                var downVotes = response.Votes.Count(v => v.VoteType.Equals("DOWNVOTE", StringComparison.OrdinalIgnoreCase));
+
                 return (submissionId, upVotes, downVotes, response.TotalVotes);
             }
-            catch
+            catch(Exception ex)
             {
                 return (submissionId, 0, 0, 0);
             }
