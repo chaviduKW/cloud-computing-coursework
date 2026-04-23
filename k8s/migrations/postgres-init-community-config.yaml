@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: community-init-script
+  namespace: techsalary
+data:
+  init.sql: |
+    -- Create schema
+    CREATE SCHEMA IF NOT EXISTS community;
+
+    -- Create votes table
+    CREATE TABLE IF NOT EXISTS community.votes (
+        Id UUID PRIMARY KEY,
+        SalarySubmissionId UUID NOT NULL,
+        UserId UUID NOT NULL,
+        VoteType INTEGER NOT NULL,
+        CreatedAt TIMESTAMP WITH TIME ZONE NOT NULL
+    );
+
+    -- Unique composite index (SalarySubmissionId + UserId)
+    CREATE UNIQUE INDEX IF NOT EXISTS IX_votes_SalarySubmissionId_UserId
+    ON community.votes (SalarySubmissionId, UserId);
