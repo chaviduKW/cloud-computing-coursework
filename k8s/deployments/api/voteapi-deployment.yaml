@@ -21,10 +21,10 @@ spec:
             - containerPort: 8080
           env:
             - name: DB_HOST
-              value: "postgres"
+              value: "postgrescommunitydb"
 
             - name: DB_PORT
-              value: "5432"
+              value: "5435"
 
             - name: DB_NAME
               valueFrom:

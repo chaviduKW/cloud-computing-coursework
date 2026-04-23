@@ -1,36 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: salarysubmissionapi
+  name: identityapi
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: salarysubmissionapi
+      app: identityapi
   template:
     metadata:
       labels:
-        app: salarysubmissionapi
+        app: identityapi
     spec:
       containers:
-        - name: salarysubmissionapi
-          image: docker.io/chavidukalpana/techsalary-salarysubmissionapi:latest
+        - name: identityapi
+          image: docker.io/chavidukalpana/techsalary-identityapi:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
             - name: DB_HOST
-              value: "postgres"
+              value: "postgresidentitydb"
 
             - name: DB_PORT
-              value: "5432"
+              value: "5433"
 
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_SUBMISSION_DB
+                  key: POSTGRES_IDENTITY_DB
 
             - name: DB_USER
               valueFrom:
