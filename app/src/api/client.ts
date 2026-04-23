@@ -16,7 +16,7 @@ const processQueue = (error: unknown, token: string | null) => {
 // If VITE_API_BASE_URL is set, use it directly (e.g. pointing to a remote server).
 // Otherwise fall back to relative URLs so the Vite dev-server proxy handles routing.
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '',
+  // baseURL: import.meta.env.VITE_API_BASE_URL || '',
 })
 
 // Attach JWT to every request

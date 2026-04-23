@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         // All API traffic routed through the API Gateway
-        // Override the target by setting API_TARGET in your .env file
+        // This will be ignored in the prod environment 
         '/api': { target: apiTarget, changeOrigin: true },
       },
     },

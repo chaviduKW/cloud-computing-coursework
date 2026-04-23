@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: statsapi
+  name: searchapi
   namespace: techsalary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: statsapi
+      app: searchapi
   template:
     metadata:
       labels:
-        app: statsapi
+        app: searchapi
     spec:
       containers:
-        - name: statsapi
-          image: docker.io/chavidukalpana/techsalary-statsapi:latest
+        - name: searchapi
+          image: docker.io/chavidukalpana/techsalary-searchapi:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
