@@ -1,23 +1,29 @@
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+# -------- Base runtime image --------
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+# -------- Build image --------
+FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
-COPY ["ApiGateway.csproj", "."]
+
+# Copy csproj and restore dependencies
+COPY ["ApiGateway.csproj", "./"]
 RUN dotnet restore "ApiGateway.csproj"
+
+# Copy everything else and build
 COPY . .
 RUN dotnet build "ApiGateway.csproj" -c Release -o /app/build
 
+# -------- Publish --------
 FROM build AS publish
-RUN dotnet publish "ApiGateway.csproj" -c Release -o /app/publish
+RUN dotnet publish "ApiGateway.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
+# -------- Final image --------
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-# Copy the Docker-specific Ocelot configuration
-COPY ocelot.docker.json ./ocelot.json
 
 ENTRYPOINT ["dotnet", "ApiGateway.dll"]

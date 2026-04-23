@@ -7,7 +7,7 @@ using Ocelot.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Kestrel to listen on port 5000
-builder.WebHost.UseUrls("http://localhost:5000");
+//builder.WebHost.UseUrls("http://localhost:5000");
 
 // Add Ocelot configuration
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
