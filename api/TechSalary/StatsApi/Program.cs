@@ -8,7 +8,10 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddHttpClient("SalaryService", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5002/");
+    var baseUrl = builder.Configuration["Services:SalarySubmissionApi"]
+        ?? throw new InvalidOperationException("Services:SalarySubmissionApi is not configured.");
+    client.BaseAddress = new Uri(baseUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
 
 builder.Services.AddScoped<StatsApi.Data.IStatsRepository, StatsApi.Data.StatsRepository>();
