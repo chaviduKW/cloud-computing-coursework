@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgressubmissionsdb
-  namespace: techsalary
+  namespace: techsalary-data
 spec:
   replicas: 1
   selector:

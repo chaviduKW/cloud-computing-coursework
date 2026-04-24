@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: community-init-script
-  namespace: techsalary
+  namespace: techsalary-data
 data:
   init.sql: |
     -- Ensure schema exists

@@ -2,7 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: postgres-storage-identity
-  namespace: techsalary
+  namespace: techsalary-data
 spec:
   accessModes:
     - ReadWriteOnce
