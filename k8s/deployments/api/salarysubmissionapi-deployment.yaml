@@ -21,7 +21,7 @@ spec:
             - containerPort: 8080
           env:
             - name: DB_HOST
-              value: "postgressubmissionsdb"
+              value: "postgressubmissionsdb.techsalary-data.svc.cluster.local"
 
             - name: DB_PORT
               value: "5434"
