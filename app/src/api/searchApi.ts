@@ -21,12 +21,3 @@ export async function search(query: SearchQuery): Promise<SearchResult> {
   return data
 }
 
-export async function getCompanies(): Promise<string[]> {
-  const { data } = await client.get<string[]>(`${BASE}/companies`)
-  return data
-}
-
-export async function getDesignations(): Promise<string[]> {
-  const { data } = await client.get<string[]>(`${BASE}/designations`)
-  return data
-}

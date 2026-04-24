@@ -34,3 +34,13 @@ export async function getApprovedSalaries(filter?: SalaryFilter): Promise<Salary
   const { data } = await client.get<SalarySubmission[]>(`${BASE}/approved`, { params })
   return data
 }
+
+export async function getCompanies(): Promise<string[]> {
+  const { data } = await client.get<string[]>(`${BASE}/companies`)
+  return data
+}
+
+export async function getDesignations(): Promise<string[]> {
+  const { data } = await client.get<string[]>(`${BASE}/designations`)
+  return data
+}

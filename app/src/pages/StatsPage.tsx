@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Col, Form, Row, Select, Statistic, Typography, Alert, Spin, Result } from 'antd'
 import { BarChartOutlined } from '@ant-design/icons'
 import { getStats } from '../api/statsApi'
-import { getCompanies, getDesignations } from '../api/searchApi'
+import { getCompanies, getDesignations } from '../api/salaryApi'
 import type { StatsResponse } from '../types'
 
 const EXPERIENCE_LEVELS = ['Entry','Junior', 'Mid', 'Senior']
@@ -31,16 +31,12 @@ export default function StatsPage() {
   const [companies, setCompanies] = useState<string[]>([])
   const [designations, setDesignations] = useState<string[]>([])
 
-  // useEffect(() => {
-  //   getCompanies().then(setCompanies).catch(() => {})
-  // }, [])
   useEffect(() => {
-      Promise.allSettled([getCompanies(), getDesignations()]).then(([c, d]) => {
-        if (c.status === 'fulfilled') setCompanies(c.value)
-        if (d.status === 'fulfilled') setDesignations(d.value)
-        setLoading(false)
-      })
-    }, [])
+    Promise.allSettled([getCompanies(), getDesignations()]).then(([c, d]) => {
+      if (c.status === 'fulfilled') setCompanies(c.value)
+      if (d.status === 'fulfilled') setDesignations(d.value)
+    })
+  }, [])
 
   const handleFinish = async (values: {
     role?: string
@@ -75,14 +71,13 @@ export default function StatsPage() {
                 <Select
                   showSearch
                   allowClear
-                  loading={loading}
                   placeholder="Any role"
                   filterOption={(input, option) =>
                     (option?.value as string).toLowerCase().includes(input.toLowerCase())
                   }
                   options={designations.map((d) => ({ value: d, label: d }))}
                 />
-            </Form.Item>
+              </Form.Item>
             </Col>
             <Col xs={24} sm={6}>
               <Form.Item name="country" label="Country">
@@ -101,8 +96,8 @@ export default function StatsPage() {
               <Form.Item name="company" label="Company">
                 <Select
                   showSearch
-                  placeholder="Select company"
                   allowClear
+                  placeholder="Any company"
                   filterOption={(input, option) =>
                     (option?.value as string).toLowerCase().includes(input.toLowerCase())
                   }

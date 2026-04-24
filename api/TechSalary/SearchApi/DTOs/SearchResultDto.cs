@@ -18,9 +18,6 @@ namespace SearchApi.DTOs
         public string Currency { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public string ExperienceLevel { get; set; } = string.Empty;
-        public int UpVotes { get; set; }
-        public int DownVotes { get; set; }
-        public int TotalVotes { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Status { get; set; }
     }

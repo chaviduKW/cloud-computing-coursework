@@ -49,21 +49,10 @@ namespace SearchApi.Services
             var pageSize = Math.Clamp(query.PageSize, 1, 100);
             var page = Math.Max(1, query.Page);
 
-            var pageItems = sorted
+            var results = sorted
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .ToList();
-
-            // Fetch vote counts from VoteApi in parallel for this page
-            var voteClient = httpClientFactory.CreateClient("VoteApi");
-            var voteTasks = pageItems.Select(item => FetchVotesAsync(voteClient, item.Id, cancellationToken));
-            var voteResults = await Task.WhenAll(voteTasks);
-            var votesById = voteResults.ToDictionary(v => v.Id);
-
-            var results = pageItems.Select(r =>
-            {
-                var votes = votesById.GetValueOrDefault(r.Id);
-                return new SalaryRecordDto
+                .Select(r => new SalaryRecordDto
                 {
                     Id = r.Id,
                     Company = r.Company,
@@ -72,13 +61,9 @@ namespace SearchApi.Services
                     Currency = r.Currency,
                     Country = r.Country,
                     ExperienceLevel = r.ExperienceLevel,
-                    UpVotes = votes.UpVotes,
-                    DownVotes = votes.DownVotes,
-                    TotalVotes = votes.TotalVotes,
                     CreatedAt = r.CreatedAt,
                     Status = r.Status
-                };
-            }).ToList();
+                }).ToList();
 
             return new SearchResultDto
             {
@@ -90,20 +75,6 @@ namespace SearchApi.Services
             };
         }
 
-        public async Task<IEnumerable<string>> GetCompaniesAsync(CancellationToken cancellationToken = default)
-        {
-            var client = httpClientFactory.CreateClient("SalarySubmissionApi");
-            return await client.GetFromJsonAsync<IEnumerable<string>>("/api/salaries/companies", cancellationToken)
-                ?? Enumerable.Empty<string>();
-        }
-
-        public async Task<IEnumerable<string>> GetDesignationsAsync(CancellationToken cancellationToken = default)
-        {
-            var client = httpClientFactory.CreateClient("SalarySubmissionApi");
-            return await client.GetFromJsonAsync<IEnumerable<string>>("/api/salaries/designations", cancellationToken)
-                ?? Enumerable.Empty<string>();
-        }
-
         private async Task<List<SalarySubmissionDto>> FetchSubmissionsAsync(CancellationToken cancellationToken)
         {
             var client = httpClientFactory.CreateClient("SalarySubmissionApi");
@@ -111,26 +82,5 @@ namespace SearchApi.Services
                 ?? [];
         }
 
-        private async Task<(Guid Id, int UpVotes, int DownVotes, int TotalVotes)> FetchVotesAsync(
-            HttpClient client, Guid submissionId, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var response = await client.GetFromJsonAsync<DTOs.VotesResponseDto>(
-                    $"/api/vote?submissionId={submissionId}", cancellationToken);
-
-                if (response is null)
-                    return (submissionId, 0, 0, 0);
-
-                var upVotes = response.Votes.Count(v => v.VoteType.Equals("UPVOTE", StringComparison.OrdinalIgnoreCase));
-                var downVotes = response.Votes.Count(v => v.VoteType.Equals("DOWNVOTE", StringComparison.OrdinalIgnoreCase));
-
-                return (submissionId, upVotes, downVotes, response.TotalVotes);
-            }
-            catch(Exception ex)
-            {
-                return (submissionId, 0, 0, 0);
-            }
-        }
     }
 }

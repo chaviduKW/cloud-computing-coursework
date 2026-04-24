@@ -10,7 +10,7 @@ import {
 } from 'antd'
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
-import { getCompanies, getDesignations } from '../api/searchApi'
+import { getCompanies, getDesignations } from '../api/salaryApi'
 import type { SearchQuery } from '../types'
 
 const { RangePicker } = DatePicker
@@ -42,7 +42,7 @@ interface FormValues {
   minSalary?: number
   maxSalary?: number
   dateRange?: [dayjs.Dayjs, dayjs.Dayjs] | null
-  sortBy?: 'date' | 'salary' | 'votes'
+  sortBy?: 'date' | 'salary'
   sortOrder?: 'asc' | 'desc'
 }
 
@@ -174,7 +174,6 @@ export default function SearchFilters({ onSearch, loading }: Props) {
             <Select>
               <Select.Option value="date">Date</Select.Option>
               <Select.Option value="salary">Salary</Select.Option>
-              <Select.Option value="votes">Votes</Select.Option>
             </Select>
           </Form.Item>
         </Col>
