@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Card, Col, Form, InputNumber, Row, Select, Switch, message, Typography, Result } from 'antd'
 import { submitSalary } from '../api/salaryApi'
-import { getCompanies, getDesignations } from '../api/searchApi'
+import { getCompanies, getDesignations } from '../api/salaryApi'
 import type { SalarySubmissionRequest } from '../types'
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'SGD', 'INR', 'JPY', 'LKR']
