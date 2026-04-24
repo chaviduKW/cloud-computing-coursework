@@ -70,11 +70,12 @@ export default function SearchPage() {
   const downvotedResults = allResults.filter((r) => userVotes[r.id] === 'DownVote');
   const pendingResults = allResults.filter((r) => r.status === 'PENDING');
 
-  const [activeTab, setActiveTab] = useState<'all' | 'up' | 'down' | 'pending'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'up' | 'down' | 'pending' | 'approval'>('all');
 
   let tableTitle = 'All Salaries';
   let tableResult = result;
   const pageSize = currentQuery.pageSize || 20;
+  const approvedResults = allResults.filter((r) => r.status === 'APPROVED');
   if (activeTab === 'up') {
     tableTitle = 'Upvoted Salaries';
     tableResult = {
@@ -101,6 +102,16 @@ export default function SearchPage() {
       ...result,
       results: pendingResults,
       totalCount: pendingResults.length,
+      page: 1,
+      totalPages: 1,
+      pageSize,
+    };
+  } else if (activeTab === 'approval') {
+    tableTitle = 'Approved Salaries';
+    tableResult = {
+      ...result,
+      results: approvedResults,
+      totalCount: approvedResults.length,
       page: 1,
       totalPages: 1,
       pageSize,
@@ -140,8 +151,15 @@ export default function SearchPage() {
             <Button
               type={activeTab === 'pending' ? 'primary' : 'default'}
               onClick={() => setActiveTab('pending')}
+              style={{ marginRight: 8 }}
             >
               Pending
+            </Button>
+            <Button
+              type={activeTab === 'approval' ? 'primary' : 'default'}
+              onClick={() => setActiveTab('approval')}
+            >
+              Approved
             </Button>
           </div>
         </div>
