@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-community-script
+  namespace: techsalary-data
+data:
+  init.sql: |
+    CREATE SCHEMA IF NOT EXISTS community;
+
+    CREATE TABLE IF NOT EXISTS community."votes" (
+        "id" UUID PRIMARY KEY,
+        "salarysubmissionid" UUID NOT NULL,
+        "userid" UUID NOT NULL,
+        "votetype" INTEGER NOT NULL,
+        "createdat" TIMESTAMP WITH TIME ZONE NOT NULL
+    );
+
+    CREATE UNIQUE INDEX IF NOT EXISTS "IX_votes_salarysubmissionid_userid"
+    ON community."votes" ("salarysubmissionid", "userid");
