@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gatewayapi
-          image: docker.io/chavidukalpana/techsalary-gatewayapi:latest
+          image: docker.io/xdinuka12/techsalary-gatewayapi:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

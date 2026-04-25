@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: docker.io/chavidukalpana/techsalary-frontend:latest
+          image: docker.io/xdinuka12/techsalary-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

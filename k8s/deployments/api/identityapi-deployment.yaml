@@ -21,16 +21,16 @@ spec:
             - containerPort: 8080
           env:
             - name: DB_HOST
-              value: "postgresidentitydb.techsalary-data.svc.cluster.local"
+              value: "postgresdb.techsalary-data.svc.cluster.local"
 
             - name: DB_PORT
-              value: "5433"
+              value: "5432"
 
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_IDENTITY_DB
+                  key: POSTGRES_DB
 
             - name: DB_USER
               valueFrom:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: searchapi
-          image: docker.io/chavidukalpana/techsalary-searchapi:latest
+          image: docker.io/xdinuka12/techsalary-searchapi:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
