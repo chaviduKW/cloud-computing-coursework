@@ -29,17 +29,17 @@ spec:
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: postgrescommunitydb-secret
-                  key: POSTGRES_DB
+                  name: postgres-secret
+                  key: POSTGRES_COMMUNITY_DB
 
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgrescommunitydb-secret
+                  name: postgres-secret
                   key: POSTGRES_USER
 
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgrescommunitydb-secret
+                  name: postgres-secret
                   key: POSTGRES_PASSWORD

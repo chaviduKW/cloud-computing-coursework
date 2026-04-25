@@ -22,17 +22,17 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: postgressubmissionsdb-secret
-                  key: POSTGRES_DB
+                  name: postgres-secret
+                  key: POSTGRES_SUBMISSION_DB
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgressubmissionsdb-secret
+                  name: postgres-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgressubmissionsdb-secret
+                  name: postgres-secret
                   key: POSTGRES_PASSWORD
           volumeMounts:
             - name: postgressubmissionsdb-data
