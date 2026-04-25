@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: postgrescommunitydb-storage
+  name: postgres-storage-community
   namespace: techsalary-data
 spec:
   accessModes:

@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: postgressubmissionsdb-storage
+  name: postgres-storage-submissions
   namespace: techsalary-data
 spec:
   accessModes:

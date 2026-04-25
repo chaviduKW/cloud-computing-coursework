@@ -42,7 +42,7 @@ spec:
       volumes:
         - name: postgresidentitydb-data
           persistentVolumeClaim:
-            claimName: postgresidentitydb-storage
+            claimName: postgres-storage-identity
         - name: init-script
           configMap:
-            name: postgres-init-identity-script
+            name: identity-init-script

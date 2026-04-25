@@ -42,7 +42,7 @@ spec:
       volumes:
         - name: postgressubmissionsdb-data
           persistentVolumeClaim:
-            claimName: postgressubmissionsdb-storage
+            claimName: postgres-storage-submissions
         - name: init-script
           configMap:
-            name: postgres-init-submissions-script
+            name: submissions-init-script

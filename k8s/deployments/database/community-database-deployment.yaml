@@ -42,7 +42,7 @@ spec:
       volumes:
         - name: postgrescommunitydb-data
           persistentVolumeClaim:
-            claimName: postgrescommunitydb-storage
+            claimName: postgres-storage-community
         - name: init-script
           configMap:
-            name: postgres-init-community-script
+            name: community-init-script
