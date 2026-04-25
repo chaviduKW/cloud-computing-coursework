@@ -67,7 +67,7 @@ export interface SearchQuery {
   maxSalary?: number
   submittedAfter?: string
   submittedBefore?: string
-  sortBy?: 'date' | 'salary'
+  sortBy?: 'date' | 'salary' | 'votes'
   sortOrder?: 'asc' | 'desc'
   page?: number
   pageSize?: number
@@ -81,6 +81,9 @@ export interface SalaryRecord {
   currency: string
   country: string
   experienceLevel: string
+  upVotes: number
+  downVotes: number
+  totalVotes: number
   createdAt: string
   status: string
 }

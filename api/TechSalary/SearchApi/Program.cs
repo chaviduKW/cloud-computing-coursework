@@ -11,6 +11,15 @@ builder.Services.AddHttpClient("SalarySubmissionApi", client =>
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
+// HTTP client for VoteApi
+builder.Services.AddHttpClient("VoteApi", client =>
+{
+    var baseUrl = builder.Configuration["Services:VoteApi"]
+        ?? throw new InvalidOperationException("Services:VoteApi is not configured.");
+    client.BaseAddress = new Uri(baseUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 // Services
 builder.Services.AddScoped<ISearchService, SearchService>();
 

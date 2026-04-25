@@ -81,7 +81,9 @@ export default function ResultsTable({ result, loading, onPageChange, userVotes,
                 loading={votingId === `${record.id}-UPVOTE`}
                 disabled={!isAuthenticated}
                 onClick={() => handleVote(record, 'UPVOTE')}
-              />
+              >
+                {record.upVotes}
+              </Button>
             </Tooltip>
             <Tooltip title={isAuthenticated ? 'Downvote' : 'Sign in to vote'}>
               <Button
@@ -104,7 +106,9 @@ export default function ResultsTable({ result, loading, onPageChange, userVotes,
                 loading={votingId === `${record.id}-DOWNVOTE`}
                 disabled={!isAuthenticated}
                 onClick={() => handleVote(record, 'DOWNVOTE')}
-              />
+              >
+                {record.downVotes}
+              </Button>
             </Tooltip>
           </span>
         );

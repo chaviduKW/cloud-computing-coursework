@@ -18,5 +18,24 @@ namespace SearchApi.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Get a distinct list of all company names in the index.
+        /// </summary>
+        [HttpGet("companies")]
+        public async Task<ActionResult<IEnumerable<string>>> GetCompanies(CancellationToken cancellationToken)
+        {
+            var companies = await searchService.GetCompaniesAsync(cancellationToken);
+            return Ok(companies);
+        }
+
+        /// <summary>
+        /// Get a distinct list of all designations in the index.
+        /// </summary>
+        [HttpGet("designations")]
+        public async Task<ActionResult<IEnumerable<string>>> GetDesignations(CancellationToken cancellationToken)
+        {
+            var designations = await searchService.GetDesignationsAsync(cancellationToken);
+            return Ok(designations);
+        }
     }
 }
