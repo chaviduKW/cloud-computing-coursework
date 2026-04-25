@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-identity
+  name: postgresidentitydb
   namespace: techsalary-data
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres-identity
+      app: postgresidentitydb
   template:
     metadata:
       labels:
-        app: postgres-identity
+        app: postgresidentitydb
     spec:
       containers:
-        - name: postgres-identity
+        - name: postgresidentitydb
           image: postgres:16
           ports:
             - containerPort: 5432
@@ -22,27 +22,27 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: postgres-identity-secret
+                  name: postgresidentitydb-secret
                   key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgres-identity-secret
+                  name: postgresidentitydb-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-identity-secret
+                  name: postgresidentitydb-secret
                   key: POSTGRES_PASSWORD
           volumeMounts:
-            - name: postgres-identity-data
+            - name: postgresidentitydb-data
               mountPath: /var/lib/postgresql/data
             - name: init-script
               mountPath: /docker-entrypoint-initdb.d/
       volumes:
-        - name: postgres-identity-data
+        - name: postgresidentitydb-data
           persistentVolumeClaim:
-            claimName: postgres-identity-storage
+            claimName: postgresidentitydb-storage
         - name: init-script
           configMap:
             name: postgres-init-identity-script

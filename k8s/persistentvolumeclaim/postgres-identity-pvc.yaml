@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: postgres-identity-storage
+  name: postgresidentitydb-storage
   namespace: techsalary-data
 spec:
   accessModes:

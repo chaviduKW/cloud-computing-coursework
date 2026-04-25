@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-submissions
+  name: postgressubmissionsdb
   namespace: techsalary-data
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres-submissions
+      app: postgressubmissionsdb
   template:
     metadata:
       labels:
-        app: postgres-submissions
+        app: postgressubmissionsdb
     spec:
       containers:
-        - name: postgres-submissions
+        - name: postgressubmissionsdb
           image: postgres:16
           ports:
             - containerPort: 5432
@@ -22,27 +22,27 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: postgres-submissions-secret
+                  name: postgressubmissionsdb-secret
                   key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgres-submissions-secret
+                  name: postgressubmissionsdb-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-submissions-secret
+                  name: postgressubmissionsdb-secret
                   key: POSTGRES_PASSWORD
           volumeMounts:
-            - name: postgres-submissions-data
+            - name: postgressubmissionsdb-data
               mountPath: /var/lib/postgresql/data
             - name: init-script
               mountPath: /docker-entrypoint-initdb.d/
       volumes:
-        - name: postgres-submissions-data
+        - name: postgressubmissionsdb-data
           persistentVolumeClaim:
-            claimName: postgres-submissions-storage
+            claimName: postgressubmissionsdb-storage
         - name: init-script
           configMap:
             name: postgres-init-submissions-script

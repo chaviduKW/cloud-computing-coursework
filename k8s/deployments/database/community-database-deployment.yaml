@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-community
+  name: postgrescommunitydb
   namespace: techsalary-data
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres-community
+      app: postgrescommunitydb
   template:
     metadata:
       labels:
-        app: postgres-community
+        app: postgrescommunitydb
     spec:
       containers:
-        - name: postgres-community
+        - name: postgrescommunitydb
           image: postgres:16
           ports:
             - containerPort: 5432
@@ -22,27 +22,27 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: postgres-community-secret
+                  name: postgrescommunitydb-secret
                   key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgres-community-secret
+                  name: postgrescommunitydb-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-community-secret
+                  name: postgrescommunitydb-secret
                   key: POSTGRES_PASSWORD
           volumeMounts:
-            - name: postgres-community-data
+            - name: postgrescommunitydb-data
               mountPath: /var/lib/postgresql/data
             - name: init-script
               mountPath: /docker-entrypoint-initdb.d/
       volumes:
-        - name: postgres-community-data
+        - name: postgrescommunitydb-data
           persistentVolumeClaim:
-            claimName: postgres-community-storage
+            claimName: postgrescommunitydb-storage
         - name: init-script
           configMap:
             name: postgres-init-community-script
