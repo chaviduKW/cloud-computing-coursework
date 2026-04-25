@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: techsalary.local
+    - host: 104.210.56.201.nip.io
       http:
         paths:
           - path: /api
