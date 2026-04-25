@@ -121,7 +121,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "salarysubmissionapi",
-          "Port": 5002
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/salaries/designations",
@@ -134,7 +134,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "salarysubmissionapi",
-          "Port": 5002
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/salaries/approve/{submissionId}",
@@ -158,7 +158,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "voteapi",
-          "Port": 5215
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/vote/{everything}",
@@ -179,7 +179,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "statsapi",
-          "Port": 5003
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/stats",
@@ -192,7 +192,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "searchapi",
-          "Port": 5254
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/api/search/{everything}",
@@ -207,7 +207,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "searchapi",
-          "Port": 5254
+          "Port": 80
         }
       ],
       "DownstreamPathTemplate": "/api/search/companies"
@@ -220,7 +220,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "searchapi",
-          "Port": 5254
+          "Port": 80
         }
       ],
       "DownstreamPathTemplate": "/api/search/designations"
