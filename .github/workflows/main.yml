@@ -1,0 +1,67 @@
+name: Build & Push All Services
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - name: gatewayapi
+            image: chavidukalpana/techsalary-gatewayapi
+            dockerfile: ./api/TechSalary/ApiGateway/Dockerfile
+            context: ./api/TechSalary/ApiGateway
+
+          - name: identityapi
+            image: chavidukalpana/techsalary-identityapi
+            dockerfile: ./api/TechSalary/IdentityApi/TechSalary.API/Dockerfile
+            context: ./api/TechSalary/IdentityApi/TechSalary.API
+
+          - name: voteapi
+            image: chavidukalpana/techsalary-voteapi
+            dockerfile: ./api/TechSalary/VoteApi/Dockerfile
+            context: ./api/TechSalary/VoteApi
+
+          - name: statsapi
+            image: chavidukalpana/techsalary-statsapi
+            dockerfile: ./api/TechSalary/StatsApi/Dockerfile
+            context: ./api/TechSalary/StatsApi
+
+          - name: searchapi
+            image: chavidukalpana/techsalary-searchapi
+            dockerfile: ./api/TechSalary/SearchApi/Dockerfile
+            context: ./api/TechSalary/SearchApi
+
+          - name: salarysubmissionapi
+            image: chavidukalpana/techsalary-salarysubmissionapi
+            dockerfile: ./api/TechSalary/SalarySubmissionApi/Dockerfile
+            context: ./api/TechSalary/SalarySubmissionApi
+
+          - name: frontend
+            image: chavidukalpana/techsalary-frontend
+            dockerfile: ./app/Dockerfile
+            context: ./app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push ${{ matrix.name }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ${{ matrix.image }}:latest
+            ${{ matrix.image }}:${{ github.sha }}
