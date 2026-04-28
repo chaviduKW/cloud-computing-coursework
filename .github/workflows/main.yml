@@ -2,7 +2,7 @@ name: Build & Push All Services
 
 on:
   push:
-    branches: [ "deployments" ]
+    branches: [ "cicd" ]
 
 jobs:
   docker:
