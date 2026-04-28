@@ -1,0 +1,10 @@
+resources:
+  - namespaces/
+  - security/
+  - migrations/
+  - persistentvolumeclaim/
+  - services/
+  - deployments/database/
+  - deployments/api/
+  - deployments/app/
+  - ingress/
