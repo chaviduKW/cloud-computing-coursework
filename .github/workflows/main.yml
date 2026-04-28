@@ -19,7 +19,7 @@ jobs:
           - name: identityapi
             image: chavidukalpana/techsalary-identityapi
             dockerfile: ./api/TechSalary/IdentityApi/TechSalary.API/Dockerfile
-            context: ./api/TechSalary/IdentityApi/TechSalary.API
+            context: ./api/TechSalary/IdentityApi
 
           - name: voteapi
             image: chavidukalpana/techsalary-voteapi
