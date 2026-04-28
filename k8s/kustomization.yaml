@@ -1,10 +1,40 @@
 resources:
-  - namespaces/
-  - security/
-  - migrations/
-  - persistentvolumeclaim/
-  - services/
-  - deployments/database/
-  - deployments/api/
-  - deployments/app/
-  - ingress/
+  - namespaces/techsalary-namespace.yaml
+  - namespaces/techsalary-data-namespace.yaml
+
+  - security/secret.yaml
+  - security/secret-database.yaml
+
+  - migrations/postgres-init-community-config.yaml
+  - migrations/postgres-init-identity-config.yaml
+  - migrations/postgres-init-submissions-config.yaml
+
+  - persistentvolumeclaim/community-postgres-pvc.yaml
+  - persistentvolumeclaim/identity-postgres-pvc.yaml
+  - persistentvolumeclaim/submissions-postgres-pvc.yaml
+
+  - services/community-database-service.yaml
+  - services/frontend-service.yaml
+  - services/gatewayapi-service.yaml
+  - services/identity-database-service.yaml
+  - services/identity-service.yaml
+  - services/salarysubmissionapi-service.yaml
+  - services/searchapi-service.yaml
+  - services/statsapi-service.yaml
+  - services/submissions-database-service.yaml
+  - services/voteapi-service.yaml
+
+  - deployments/database/community-database-deployment.yaml
+  - deployments/database/identity-database-deployment.yaml
+  - deployments/database/submissions-database-deployment.yaml
+
+  - deployments/api/gatewayapi-deployment.yaml
+  - deployments/api/identityapi-deployment.yaml
+  - deployments/api/salarysubmissionapi-deployment.yaml
+  - deployments/api/searchapi-deployment.yaml
+  - deployments/api/statsapi-deployment.yaml
+  - deployments/api/voteapi-deployment.yaml
+
+  - deployments/app/frontend-deployment.yaml
+
+  - ingress/ingress.yaml
